@@ -1,0 +1,87 @@
+version: '2.2'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    container_name: es01
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - ddd
+ 
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.9.2
+    container_name: kib01
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: http://es01:9200
+    networks:
+      - ddd
+
+  db:
+    image: mysql:8.0.20
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    container_name: db_container
+    environment:
+      - MYSQL_DATABASE=ddd
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3306:3306
+    networks:
+      - ddd
+    
+  nginx:
+    build: ./docker/nginx
+    container_name: billie_web_container
+    volumes: 
+      - .:/var/www/html:cached
+      - fpm_sockets:/tmp
+    depends_on: 
+      - php
+    ports:
+      - 80:8080
+      - 443:8443
+    networks:
+      - ddd
+  
+  php:
+    build: ./docker/php
+    container_name: billie_php_fpm_container
+    volumes:
+      - .:/var/www/html:cached
+      - fpm_sockets:/tmp
+    networks:
+      - ddd
+    environment:
+      PHP_IDE_CONFIG: "serverName=billie"
+  
+  composer:
+    build: ./docker/composer
+    container_name: billie_composer_container
+    volumes:
+      - .:/app
+    networks:
+      - ddd
+
+volumes:
+  data01:
+    driver: local
+  db:
+    driver: local
+
+networks:
+  ddd:
+    driver: bridge
