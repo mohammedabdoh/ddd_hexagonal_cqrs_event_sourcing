@@ -8,11 +8,11 @@ use App\Domain\DomainEvent;
 
 class PostWasCreated implements DomainEvent
 {
-    private string $postId;
+    private PostId $postId;
     private string $title;
     private string $content;
     
-    public function __construct(string $postId, string $title, string $content)
+    public function __construct(PostId $postId, string $title, string $content)
     {
         $this->postId = $postId;
         $this->title = $title;
@@ -26,7 +26,7 @@ class PostWasCreated implements DomainEvent
 
     public function postId(): string
     {
-        return $this->postId;
+        return $this->postId->id();
     }
 
     public function title(): string

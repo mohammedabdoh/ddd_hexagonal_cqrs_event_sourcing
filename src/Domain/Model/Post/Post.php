@@ -22,7 +22,7 @@ class Post extends AggregateRoot
         $postId = PostId::create();
         $post = new static($postId);
         $post->recordApplyAndPublish(
-            new PostWasCreated($postId->id(), $title, $content)
+            new PostWasCreated($postId, $title, $content)
         );
         return $post;
     }
