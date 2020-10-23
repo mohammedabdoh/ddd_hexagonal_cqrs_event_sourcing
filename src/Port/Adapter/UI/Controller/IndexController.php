@@ -14,7 +14,10 @@ class IndexController extends AbstractController
 
     public function __construct()
     {
-        $this->client = ClientBuilder::create()->build();
+        $hosts = [
+            'es01:9200',
+        ];
+        $this->client = ClientBuilder::create()->setHosts($hosts)->build();
     }
     
     /**
@@ -22,9 +25,6 @@ class IndexController extends AbstractController
      */
     public function index(): JsonResponse
     {
-        $response = $this->client->search([
-            'index' => 'my_index',
-        ]);
-        return new JsonResponse($response['hits']['hits'][2]['_source']['Name']);
+        return new JsonResponse([]);
     }
 }

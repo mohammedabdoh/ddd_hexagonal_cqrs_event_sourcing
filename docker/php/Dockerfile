@@ -1,5 +1,7 @@
 FROM php:7.4.2-fpm
 
+RUN docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql
+
 RUN addgroup --system --gid 1000 sysusers
 RUN adduser --system --uid 1000 --ingroup sysusers appuser
 

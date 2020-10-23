@@ -2,7 +2,7 @@ version: '2.2'
 services:
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
-    container_name: es01
+    container_name: elastic_container
     environment:
       - node.name=es01
       - discovery.type=single-node
@@ -15,12 +15,13 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
+    hostname: es01
     networks:
       - ddd
  
   kib01:
     image: docker.elastic.co/kibana/kibana:7.9.2
-    container_name: kib01
+    container_name: kibana_container
     ports:
       - 5601:5601
     environment:
@@ -28,6 +29,8 @@ services:
       ELASTICSEARCH_HOSTS: http://es01:9200
     networks:
       - ddd
+    depends_on:
+      - es01
 
   db:
     image: mysql:8.0.20
@@ -45,21 +48,26 @@ services:
     
   nginx:
     build: ./docker/nginx
-    container_name: billie_web_container
+    container_name: web_container
     volumes: 
       - .:/var/www/html:cached
       - fpm_sockets:/tmp
     depends_on: 
       - php
+      - es01
+      - db
     ports:
       - 80:8080
       - 443:8443
+    links:
+      - db
+      - es01
     networks:
       - ddd
   
   php:
     build: ./docker/php
-    container_name: billie_php_fpm_container
+    container_name: php_fpm_container
     volumes:
       - .:/var/www/html:cached
       - fpm_sockets:/tmp
@@ -70,7 +78,7 @@ services:
   
   composer:
     build: ./docker/composer
-    container_name: billie_composer_container
+    container_name: composer_container
     volumes:
       - .:/app
     networks:
@@ -80,6 +88,8 @@ volumes:
   data01:
     driver: local
   db:
+    driver: local
+  fpm_sockets:
     driver: local
 
 networks:
