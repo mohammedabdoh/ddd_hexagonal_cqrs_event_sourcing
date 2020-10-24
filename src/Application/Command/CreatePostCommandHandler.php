@@ -3,20 +3,20 @@
 namespace App\Application\Command;
 
 use App\Domain\Model\Post\Post;
+use App\Domain\Model\Post\PostRepository;
 use App\Domain\Model\Post\PostWasCreatedProjection;
 use App\Domain\Projector;
-use App\Port\Adapter\Persistence\MySQL\DoctrinePostRepository;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 
 class CreatePostCommandHandler
 {
-    private DoctrinePostRepository $repository;
+    private PostRepository $repository;
     private Projector $projector;
     private Client $client;
 
     public function __construct(
-        DoctrinePostRepository $repository,
+        PostRepository $repository,
         Projector $projector,
         ClientBuilder $clientBuilder
     ) {

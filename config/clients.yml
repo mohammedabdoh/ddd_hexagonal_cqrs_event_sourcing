@@ -15,3 +15,7 @@ services:
       $repository: '@App\Port\Adapter\Persistence\MySQL\DoctrinePostRepository'
       $projector: '@App\Domain\Projector'
       $clientBuilder: 'Elasticsearch\ClientBuilder'
+
+  App\Port\Adapter\Persistence\ElasticSearch\ElasticSearchPostRepository:
+    arguments:
+      $clientBuilder: 'Elasticsearch\ClientBuilder'

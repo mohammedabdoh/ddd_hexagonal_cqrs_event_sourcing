@@ -27,6 +27,14 @@ class Post extends AggregateRoot
         return $post;
     }
 
+    public static function buildAPost(PostId $postId, string $title, string $content): self
+    {
+        $post = new static($postId);
+        $post->title = $title;
+        $post->content = $content;
+        return $post;
+    }
+
     public function applyPostWasCreated(PostWasCreated $postWasCreated): void
     {
         $this->postId = $postWasCreated->postId();
