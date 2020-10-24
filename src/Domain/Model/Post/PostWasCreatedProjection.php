@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Model\Post;
 
+use App\Domain\DomainEvent;
+use App\Domain\Projection;
 use Elasticsearch\Client;
 
-class PostWasCreatedProjection
+class PostWasCreatedProjection implements Projection
 {
     private Client $client;
 
@@ -20,13 +22,13 @@ class PostWasCreatedProjection
         return PostWasCreated::class;
     }
 
-    public function project(PostWasCreated $domainEvent): void
+    public function project(DomainEvent $domainEvent): void
     {
         $this->client->index(
             [
                 'index' => 'posts',
                 'type' => 'post',
-                'id' => $domainEvent->postId(),
+                'id' => $domainEvent->postId()->id(),
                 'body' => [
                     'title' => $domainEvent->title(),
                     'content' => $domainEvent->content()

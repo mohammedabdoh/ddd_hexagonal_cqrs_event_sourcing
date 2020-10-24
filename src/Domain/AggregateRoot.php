@@ -6,7 +6,7 @@ use ReflectionClass;
 
 class AggregateRoot
 {
-    /** DomainEvent[] */
+    /** @var DomainEvent[] */
     private array $recordedEvents = [];
 
     protected function recordApplyAndPublish(DomainEvent $event): void
@@ -23,9 +23,14 @@ class AggregateRoot
 
     protected function applyThat(DomainEvent $event): void
     {
-        $className = (new ReflectionClass($event))->getShortName();
-        $modifier = "apply{$className}";
-        $this->$modifier($event);
+        try {
+            $className = (new ReflectionClass($event))->getShortName();
+            $modifier = "apply{$className}";
+            $this->$modifier($event);
+        } catch (\ReflectionException $e) {
+
+        }
+
     }
 
     protected function publishThat(DomainEvent $event): void

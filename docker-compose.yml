@@ -18,19 +18,6 @@ services:
     hostname: es01
     networks:
       - ddd
- 
-  kib01:
-    image: docker.elastic.co/kibana/kibana:7.9.2
-    container_name: kibana_container
-    ports:
-      - 5601:5601
-    environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: http://es01:9200
-    networks:
-      - ddd
-    depends_on:
-      - es01
 
   db:
     image: mysql:8.0.20

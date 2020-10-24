@@ -1,0 +1,17 @@
+services:
+  Elasticsearch\ClientBuilder:
+    factory: [ 'Elasticsearch\ClientBuilder', 'create' ]
+    calls:
+      - [ setHosts, [ [ 'es01:9200' ] ] ]
+      - [ build ]
+
+  App\Port\Adapter\UI\Controller\CreatePostController:
+    arguments:
+      $clientBuilder: 'Elasticsearch\ClientBuilder'
+      $handler: 'App\Application\Command\CreatePostCommandHandler'
+
+  App\Application\Command\CreatePostCommandHandler:
+    arguments:
+      $repository: '@App\Port\Adapter\Persistence\MySQL\DoctrinePostRepository'
+      $projector: '@App\Domain\Projector'
+      $clientBuilder: 'Elasticsearch\ClientBuilder'

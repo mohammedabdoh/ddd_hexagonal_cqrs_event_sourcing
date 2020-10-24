@@ -24,13 +24,18 @@ class PostWasCreated implements DomainEvent
         return $this->content;
     }
 
-    public function postId(): string
+    public function postId(): PostId
     {
-        return $this->postId->id();
+        return $this->postId;
     }
 
     public function title(): string
     {
         return $this->title;
-    } 
+    }
+
+    public function getVersion(): string
+    {
+        return '1.0';
+    }
 }

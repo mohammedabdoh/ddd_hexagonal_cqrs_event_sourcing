@@ -12,7 +12,7 @@ class Post extends AggregateRoot
     private string $title;
     private string $content;
 
-    public function __construct(PostId $postId)
+    private function __construct(PostId $postId)
     {
         $this->postId = $postId;
     }
@@ -32,5 +32,20 @@ class Post extends AggregateRoot
         $this->postId = $postWasCreated->postId();
         $this->title = $postWasCreated->title();
         $this->content = $postWasCreated->content();
+    }
+
+    public function getPostId(): PostId
+    {
+        return $this->postId;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
     }
 }
