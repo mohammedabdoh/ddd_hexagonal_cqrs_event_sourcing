@@ -21,7 +21,7 @@ class DoctrinePostRepository implements BaseDoctrinePostRepository
         $this->projector = $projector;
     }
 
-    public function byId(int $postId): Post
+    public function byId(string $postId): Post
     {
         try {
             return $this->em->find(Post::class, $postId);
@@ -37,6 +37,17 @@ class DoctrinePostRepository implements BaseDoctrinePostRepository
             $em->persist($post);
             $em->flush();
             // TODO: save events here
+        });
+
+        $this->projector->project($post->recordedEvents());
+    }
+
+    public function delete(Post $post): void
+    {
+        $detachedEntity = $this->em->merge($post);
+        $this->em->transactional(function(EntityManagerInterface $em) use ($detachedEntity) {
+            $em->remove($detachedEntity);
+            $em->flush();
         });
 
         $this->projector->project($post->recordedEvents());

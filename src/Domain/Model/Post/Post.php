@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Domain\Model\Post;
 
@@ -35,11 +33,23 @@ class Post extends AggregateRoot
         return $post;
     }
 
+    public static function deletePost(PostId $postId): self
+    {
+        $post = new static($postId);
+        $post->recordApplyAndPublish(new PostWasDeleted($postId));
+        return $post;
+    }
+
     public function applyPostWasCreated(PostWasCreated $postWasCreated): void
     {
         $this->postId = $postWasCreated->postId();
         $this->title = $postWasCreated->title();
         $this->content = $postWasCreated->content();
+    }
+
+    public function applyPostWasDeleted(PostWasDeleted $postWasDeleted): void
+    {
+        $this->postId = $postWasDeleted->postId();
     }
 
     public function getPostId(): PostId

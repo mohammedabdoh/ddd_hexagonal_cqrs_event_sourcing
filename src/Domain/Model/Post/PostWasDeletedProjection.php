@@ -6,7 +6,7 @@ use App\Domain\DomainEvent;
 use App\Domain\Projection;
 use Elasticsearch\Client;
 
-class PostWasCreatedProjection implements Projection
+class PostWasDeletedProjection implements Projection
 {
     private Client $client;
 
@@ -17,20 +17,16 @@ class PostWasCreatedProjection implements Projection
 
     public function listenTo(): string
     {
-        return PostWasCreated::class;
+        return PostWasDeleted::class;
     }
 
     public function project(DomainEvent $domainEvent): void
     {
-        $this->client->index(
+        $this->client->delete(
             [
                 'index' => 'posts',
                 'type' => 'post',
                 'id' => $domainEvent->postId()->id(),
-                'body' => [
-                    'title' => $domainEvent->title(),
-                    'content' => $domainEvent->content()
-                ]
             ]
         );
     }
