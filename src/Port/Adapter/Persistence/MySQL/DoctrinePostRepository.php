@@ -1,18 +1,16 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Port\Adapter\Persistence\MySQL;
 
 use App\Domain\Model\Post\Post;
-use App\Domain\Model\Post\DoctrinePostRepository;
+use App\Domain\Model\Post\DoctrinePostRepository as BaseDoctrinePostRepository;
 use App\Domain\Projector;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\TransactionRequiredException;
 
-class DoctrineDoctrinePostRepository implements DoctrinePostRepository
+class DoctrinePostRepository implements BaseDoctrinePostRepository
 {
     private EntityManagerInterface $em;
     private Projector $projector;

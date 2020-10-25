@@ -1,16 +1,14 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Port\Adapter\Persistence\ElasticSearch;
 
 use App\Domain\Model\Post\Post;
-use App\Domain\Model\Post\ElasticSearchPostRepository as ElasticSearchRepository;
 use App\Domain\Model\Post\PostId;
+use App\Domain\Model\Post\ElasticSearchPostRepository as BaseElasticSearchPostRepository;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 
-class ElasticSearchPostRepository implements ElasticSearchRepository
+class ElasticSearchPostRepository implements BaseElasticSearchPostRepository
 {
     private Client $client;
 
