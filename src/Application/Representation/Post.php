@@ -15,12 +15,18 @@ class Post
         $this->content = $content;
     }
 
-    public function getData(): array
+    public function getId(): string
     {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'content' => $this->content
-        ];
+        return $this->id;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
     }
 }

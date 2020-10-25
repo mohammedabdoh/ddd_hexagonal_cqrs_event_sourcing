@@ -3,20 +3,21 @@
 namespace App\Application\Command;
 
 use App\Domain\Model\Post\Post;
-use App\Domain\Model\Post\PostRepository;
+use App\Domain\Model\Post\DoctrinePostRepository;
 use App\Domain\Model\Post\PostWasCreatedProjection;
 use App\Domain\Projector;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 
-class CreatePostCommandHandler
+class CreatePostCommandHandler implements MessageHandlerInterface
 {
-    private PostRepository $repository;
+    private DoctrinePostRepository $repository;
     private Projector $projector;
     private Client $client;
 
     public function __construct(
-        PostRepository $repository,
+        DoctrinePostRepository $repository,
         Projector $projector,
         ClientBuilder $clientBuilder
     ) {
@@ -26,13 +27,13 @@ class CreatePostCommandHandler
         $this->registerProjection();
     }
 
-    public function createAPost(CreatePostCommand $command): void
+    public function __invoke(CreatePostCommand $command): void
     {
         $post = Post::createNewPost($command->getTitle(), $command->getContent());
         $this->repository->save($post);
     }
 
-    public function registerProjection(): void
+    private function registerProjection(): void
     {
         $this->projector->register([new PostWasCreatedProjection($this->client)]);
     }

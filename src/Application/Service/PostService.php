@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Application\Service;
 
-use App\Domain\Model\Post\PostRepository;
+use App\Domain\Model\Post\DoctrinePostRepository;
 
 class PostService
 {
-    private PostRepository $repository;
+    private DoctrinePostRepository $repository;
 
-    public function __construct(PostRepository $postRepository)
+    public function __construct(DoctrinePostRepository $postRepository)
     {
         $this->repository = $postRepository;
     }

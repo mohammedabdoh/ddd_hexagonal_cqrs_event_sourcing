@@ -7,8 +7,7 @@ services:
 
   App\Port\Adapter\UI\Controller\CreatePostController:
     arguments:
-      $clientBuilder: 'Elasticsearch\ClientBuilder'
-      $handler: 'App\Application\Command\CreatePostCommandHandler'
+      $bus: '@messenger.default_bus'
 
   App\Application\Command\CreatePostCommandHandler:
     arguments:

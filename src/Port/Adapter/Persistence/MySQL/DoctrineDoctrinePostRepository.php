@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Persistence\MySQL;
 
 use App\Domain\Model\Post\Post;
-use App\Domain\Model\Post\PostRepository;
+use App\Domain\Model\Post\DoctrinePostRepository;
 use App\Domain\Projector;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\TransactionRequiredException;
 
-class DoctrinePostRepository implements PostRepository
+class DoctrineDoctrinePostRepository implements DoctrinePostRepository
 {
     private EntityManagerInterface $em;
     private Projector $projector;

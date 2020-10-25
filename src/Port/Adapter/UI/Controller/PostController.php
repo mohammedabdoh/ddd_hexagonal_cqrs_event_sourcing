@@ -1,35 +1,33 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Port\Adapter\UI\Controller;
 
 use App\Application\Query\PostQueryHandler;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Elasticsearch\Client;
-use Elasticsearch\ClientBuilder;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Class PostController
  * @package App\Port\Adapter\UI\Controller
  * @Route("/posts", methods={"GET"}, name="all_posts")
  */
-class PostController extends AbstractController
+class PostController
 {
-    private Client $client;
     private PostQueryHandler $handler;
+    private SerializerInterface $serializer;
 
-    public function __construct(ClientBuilder $clientBuilder, PostQueryHandler $handler)
+    public function __construct(PostQueryHandler $handler, SerializerInterface $serializer)
     {
-        $this->client = $clientBuilder->build();
         $this->handler = $handler;
+        $this->serializer = $serializer;
     }
 
     public function __invoke(): Response
     {
-        // TODO: Use JSM Serializer
-        $posts = $this->handler->all()->getPosts();
-        return new JsonResponse($posts, Response::HTTP_CREATED);
+        return JsonResponse::fromJsonString(
+            $this->serializer->serialize($this->handler->all(), 'json')
+        );
     }
 }

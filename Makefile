@@ -1,15 +1,18 @@
-.PHONY: run test api-docs clean help
+.PHONY: run test install api-docs clean help
 
 run: ## run the application
 	@docker-compose up --build -d
-	@docker exec -it billie_composer_container composer install
-	@docker exec -it billie_php_fpm_container ./bin/console cache:warmup
-	@docker stop billie_composer_container && docker rm billie_composer_container
+	@docker exec -it composer_container composer install
+	@docker exec -it php_fpm_container ./bin/console cache:warmup
+	@docker stop composer_container && docker rm composer_container
 	@printf "\n-> Service is available at: http://localhost"
 	@printf "\n-> Example: http://localhost/mars-time/convert/2020-07-11T16:36:52+00:00\n"
 
 test: ## run unit and functional tests
-	@docker exec -it billie_php_fpm_container ./vendor/phpunit/phpunit/phpunit
+	@docker exec -it php_fpm_container ./vendor/phpunit/phpunit/phpunit
+
+install: ## install php dependency. EX: make install DEP=<package> DEV=--dev
+	@docker run --rm -it -v ${PWD}:/app composer:2.0 require $(DEP) $(DEV) --ignore-platform-reqs
 
 api-docs: ## open the api docs
 	@open http://localhost/docs/

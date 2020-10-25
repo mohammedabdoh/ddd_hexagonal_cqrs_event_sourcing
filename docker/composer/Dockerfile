@@ -1,4 +1,4 @@
-FROM composer
+FROM composer:2.0
 
 RUN addgroup --system --gid 1000 sysusers
 RUN adduser --system --uid 1000 --ingroup sysusers appuser
