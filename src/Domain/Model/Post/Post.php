@@ -33,10 +33,9 @@ class Post extends AggregateRoot
         return $post;
     }
 
-    public static function deletePost(PostId $postId): self
+    public static function deletePost(self $post): self
     {
-        $post = new static($postId);
-        $post->recordApplyAndPublish(new PostWasDeleted($postId));
+        $post->recordApplyAndPublish(new PostWasDeleted($post->getPostId()));
         return $post;
     }
 

@@ -6,9 +6,6 @@ use App\Domain\Model\Post\Post;
 use App\Domain\Model\Post\DoctrinePostRepository as BaseDoctrinePostRepository;
 use App\Domain\Projector;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\TransactionRequiredException;
 
 class DoctrinePostRepository implements BaseDoctrinePostRepository
 {
@@ -21,14 +18,15 @@ class DoctrinePostRepository implements BaseDoctrinePostRepository
         $this->projector = $projector;
     }
 
-    public function byId(string $postId): Post
+    public function byId(string $postId): ?Post
     {
+        $post = null;
         try {
-            return $this->em->find(Post::class, $postId);
-        } catch (OptimisticLockException $e) {
-        } catch (TransactionRequiredException $e) {
-        } catch (ORMException $e) {
+            $post = $this->em->find(Post::class, $postId);
+        } catch (\Exception $e) {
+
         }
+        return $post;
     }
 
     public function save(Post $post): void
@@ -44,9 +42,8 @@ class DoctrinePostRepository implements BaseDoctrinePostRepository
 
     public function delete(Post $post): void
     {
-        $detachedEntity = $this->em->merge($post);
-        $this->em->transactional(function(EntityManagerInterface $em) use ($detachedEntity) {
-            $em->remove($detachedEntity);
+        $this->em->transactional(function(EntityManagerInterface $em) use ($post) {
+            $em->remove($post);
             $em->flush();
         });
 

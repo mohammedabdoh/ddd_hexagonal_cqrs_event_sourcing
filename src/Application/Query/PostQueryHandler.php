@@ -2,7 +2,8 @@
 
 namespace App\Application\Query;
 
-use App\Application\Representation\AllPosts;
+use App\Application\Exception\PostNotFoundException;
+use App\Application\Representation\Post;
 use App\Domain\Model\Post\ElasticSearchPostRepository;
 
 class PostQueryHandler
@@ -15,10 +16,20 @@ class PostQueryHandler
     }
 
     /**
-     * @return AllPosts
+     * @param PostQuery $query
+     * @return Post
+     * @throws PostNotFoundException
      */
-    public function all(): AllPosts
+    public function byId(PostQuery $query): Post
     {
-        return new AllPosts($this->repository->all());
+        $post = $this->repository->byId($query->getId());
+        if($post) {
+            return new Post(
+                $post->getPostId()->id(),
+                $post->getTitle(),
+                $post->getContent()
+            );
+        }
+        throw new PostNotFoundException($query->getId());
     }
 }

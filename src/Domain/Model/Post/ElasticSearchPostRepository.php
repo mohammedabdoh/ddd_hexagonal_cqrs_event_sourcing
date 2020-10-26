@@ -6,5 +6,6 @@ namespace App\Domain\Model\Post;
 
 interface ElasticSearchPostRepository
 {
+    public function byId(string $id): ?Post;
     public function all(): array;
 }

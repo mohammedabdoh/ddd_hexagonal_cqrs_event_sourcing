@@ -2,6 +2,7 @@
 
 namespace App\Application\Command;
 
+use App\Application\Exception\PostNotFoundException;
 use App\Domain\Model\Post\Post;
 use App\Domain\Model\Post\DoctrinePostRepository;
 use App\Domain\Model\Post\PostId;
@@ -28,13 +29,18 @@ class DeletePostCommandHandler implements MessageHandlerInterface
         $this->registerProjection();
     }
 
+    /**
+     * @param DeletePostCommand $command
+     * @throws PostNotFoundException
+     */
     public function __invoke(DeletePostCommand $command): void
     {
-        $this->repository->delete(
-            Post::deletePost(
-                new PostId($command->getId())
-            )
-        );
+        $post = $this->repository->byId($command->getId());
+        if($post) {
+            $this->repository->delete(Post::deletePost($post));
+            return;
+        }
+        throw new PostNotFoundException($command->getId());
     }
 
     private function registerProjection(): void

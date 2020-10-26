@@ -7,6 +7,7 @@ use App\Domain\Model\Post\PostId;
 use App\Domain\Model\Post\ElasticSearchPostRepository as BaseElasticSearchPostRepository;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 class ElasticSearchPostRepository implements BaseElasticSearchPostRepository
 {
@@ -15,6 +16,30 @@ class ElasticSearchPostRepository implements BaseElasticSearchPostRepository
     public function __construct(ClientBuilder $clientBuilder)
     {
         $this->client = $clientBuilder->build();
+    }
+
+    public function byId(string $id): ?Post
+    {
+        $foundPost = null;
+
+        try {
+            $result = $this->client->get(
+                [
+                    'index' => 'posts',
+                    'type' => 'post',
+                    'id' => $id
+                ]
+            );
+            $foundPost = Post::buildAPost(
+                new PostId($result['_id']),
+                $result['_source']['title'],
+                $result['_source']['content']
+            );
+        } catch (Missing404Exception $exception) {
+
+        }
+
+        return $foundPost;
     }
 
     public function all(): array
