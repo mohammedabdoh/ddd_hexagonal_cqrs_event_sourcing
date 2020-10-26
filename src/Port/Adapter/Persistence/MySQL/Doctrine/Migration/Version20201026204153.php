@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-namespace DoctrineMigrations;
+namespace App\Port\Adapter\Persistence\MySQL\Doctrine\Migration;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
@@ -10,7 +8,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20201024200543 extends AbstractMigration
+final class Version20201026204153 extends AbstractMigration
 {
     public function getDescription() : string
     {
