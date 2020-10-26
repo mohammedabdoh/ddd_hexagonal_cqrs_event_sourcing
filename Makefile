@@ -1,21 +1,16 @@
-.PHONY: run test install api-docs clean help
+.PHONY: run test install clean help
 
 run: ## run the application
 	@docker-compose up --build -d
 	@docker exec -it composer_container composer install
 	@docker exec -it php_fpm_container ./bin/console cache:warmup
 	@docker stop composer_container && docker rm composer_container
-	@printf "\n-> Service is available at: http://localhost"
-	@printf "\n-> Example: http://localhost/mars-time/convert/2020-07-11T16:36:52+00:00\n"
 
 test: ## run unit and functional tests
 	@docker exec -it php_fpm_container ./vendor/phpunit/phpunit/phpunit
 
 install: ## install php dependency. EX: make install DEP=<package> DEV=--dev
 	@docker run --rm -it -v ${PWD}:/app composer:2.0 require $(DEP) $(DEV) --ignore-platform-reqs
-
-api-docs: ## open the api docs
-	@open http://localhost/docs/
 
 clean: ## stops the containers if exists and remove all the dependencies
 	@docker-compose down --remove-orphans || true
