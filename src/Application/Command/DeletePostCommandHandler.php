@@ -5,7 +5,6 @@ namespace App\Application\Command;
 use App\Application\Exception\PostNotFoundException;
 use App\Domain\Model\Post\Post;
 use App\Domain\Model\Post\DoctrinePostRepository;
-use App\Domain\Model\Post\PostId;
 use App\Domain\Model\Post\PostWasDeletedProjection;
 use App\Domain\Projector;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
