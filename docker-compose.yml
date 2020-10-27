@@ -63,7 +63,7 @@ services:
     networks:
       - ddd
     environment:
-      PHP_IDE_CONFIG: "serverName=billie"
+      PHP_IDE_CONFIG: "serverName=ddd"
 
   composer:
     build: ./docker/composer
