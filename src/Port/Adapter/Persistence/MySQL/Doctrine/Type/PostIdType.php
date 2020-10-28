@@ -1,20 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Port\Adapter\Persistence\MySQL\Doctrine\Type;
 
 use App\Domain\Model\Post\PostId;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\GuidType;
 
-class PostIdType extends Type
+class PostIdType extends GuidType
 {
-    const POST_ID_TYPE = 'post_id';
-
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
-    {
-        return 'POST_ID_TYPE';
-    }
-
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         return new PostId($value);
@@ -22,6 +17,6 @@ class PostIdType extends Type
 
     public function getName()
     {
-        return self::POST_ID_TYPE;
+        return 'PostId';
     }
 }

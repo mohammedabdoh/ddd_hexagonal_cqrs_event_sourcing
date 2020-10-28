@@ -2,7 +2,7 @@ doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
         types:
-            post_id:
+            PostId:
                 class: App\Port\Adapter\Persistence\MySQL\Doctrine\Type\PostIdType
     orm:
         auto_generate_proxy_classes: true

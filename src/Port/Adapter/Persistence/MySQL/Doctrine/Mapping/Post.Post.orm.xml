@@ -4,7 +4,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                           https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="App\Domain\Model\Post\Post" table="app_posts">
-        <id name="postId" column="postId" type="post_id" />
+        <id name="postId" column="postId" type="PostId" />
         <field name="title" column="title" type="string" />
         <field name="content" column="content" type="string" />
     </entity>

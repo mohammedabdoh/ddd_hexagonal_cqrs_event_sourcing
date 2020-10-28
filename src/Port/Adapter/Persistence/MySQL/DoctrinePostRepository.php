@@ -6,6 +6,7 @@ use App\Domain\Model\Post\Post;
 use App\Domain\Model\Post\DoctrinePostRepository as BaseDoctrinePostRepository;
 use App\Domain\Projector;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 
 class DoctrinePostRepository implements BaseDoctrinePostRepository
 {
@@ -23,7 +24,7 @@ class DoctrinePostRepository implements BaseDoctrinePostRepository
         $post = null;
         try {
             $post = $this->em->find(Post::class, $postId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
         }
         return $post;

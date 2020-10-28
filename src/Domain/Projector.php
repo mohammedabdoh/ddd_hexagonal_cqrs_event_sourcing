@@ -14,15 +14,15 @@ class Projector
      */
     public function register(array $projections): void
     {
-        foreach($projections as $projection) {
+        foreach ($projections as $projection) {
             $this->projections[$projection->listenTo()] = $projection;
         }
     }
-    
+
     public function project(array $events): void
     {
-        foreach($events as $event) {
-            if(isset($this->projections[get_class($event)])) {
+        foreach ($events as $event) {
+            if (isset($this->projections[get_class($event)])) {
                 $this->projections[get_class($event)]->project($event);
             }
         }

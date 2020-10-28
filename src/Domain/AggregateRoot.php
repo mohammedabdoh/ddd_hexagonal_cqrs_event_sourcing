@@ -3,6 +3,7 @@
 namespace App\Domain;
 
 use ReflectionClass;
+use ReflectionException;
 
 class AggregateRoot
 {
@@ -27,10 +28,9 @@ class AggregateRoot
             $className = (new ReflectionClass($event))->getShortName();
             $modifier = "apply{$className}";
             $this->$modifier($event);
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
 
         }
-
     }
 
     protected function publishThat(DomainEvent $event): void

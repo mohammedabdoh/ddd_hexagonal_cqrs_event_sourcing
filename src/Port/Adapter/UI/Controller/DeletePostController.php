@@ -5,6 +5,7 @@ namespace App\Port\Adapter\UI\Controller;
 use App\Application\Command\DeletePostCommand;
 use App\Application\Representation\Error;
 use App\Application\Representation\Errors;
+use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +34,7 @@ class DeletePostController
         try {
             $this->bus->dispatch(new DeletePostCommand($id));
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return JsonResponse::fromJsonString(
                 $this->serializer->serialize(
                     new Errors(
