@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Application\Query;
 
@@ -23,7 +25,7 @@ class PostQueryHandler
     public function byId(PostQuery $query): Post
     {
         $post = $this->repository->byId($query->getId());
-        if($post) {
+        if ($post) {
             return new Post(
                 $post->getPostId()->id(),
                 $post->getTitle(),

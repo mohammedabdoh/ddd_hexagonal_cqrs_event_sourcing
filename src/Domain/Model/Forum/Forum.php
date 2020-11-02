@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Model\Forum;
 
-use App\Domain\EventSourcedAggregateRoot;
-use App\Domain\EventStream;
+use App\Common\Domain\EventSourcedAggregateRoot;
+use App\Common\Domain\EventStream;
 
 class Forum extends EventSourcedAggregateRoot
 {

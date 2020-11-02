@@ -1,14 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Application\Command;
 
-use App\Domain\Model\Post\Post;
+use App\Common\Domain\Projector;
 use App\Domain\Model\Post\DoctrinePostRepository;
+use App\Domain\Model\Post\Post;
 use App\Domain\Model\Post\PostWasCreatedProjection;
-use App\Domain\Projector;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class CreatePostCommandHandler implements MessageHandlerInterface
 {

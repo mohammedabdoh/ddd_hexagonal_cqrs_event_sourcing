@@ -7,7 +7,7 @@ namespace App\Application\Command;
 use App\Domain\Model\Forum\EventSourcedForumRepository;
 use App\Domain\Model\Forum\Forum;
 use App\Domain\Model\Forum\ForumWasCreatedProjection;
-use App\Domain\Projector;
+use App\Common\Domain\Projector;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;

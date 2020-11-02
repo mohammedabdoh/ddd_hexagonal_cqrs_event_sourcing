@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model\Post;
 
-use App\Domain\DomainEvent;
+use App\Common\Domain\DomainEvent;
 
 class PostWasDeleted implements DomainEvent
 {

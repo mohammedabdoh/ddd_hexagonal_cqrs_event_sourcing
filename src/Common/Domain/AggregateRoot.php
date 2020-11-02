@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain;
+namespace App\Common\Domain;
 
 use ReflectionClass;
 use ReflectionException;

@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model\Forum;
 
-use App\Domain\DomainEvent;
+use App\Common\Domain\DomainEvent;
 
 class ForumWasCreated implements DomainEvent
 {

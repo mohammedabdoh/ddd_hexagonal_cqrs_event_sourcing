@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model\Post;
 
-use App\Domain\AggregateRoot;
+use App\Common\Domain\AggregateRoot;
 
 class Post extends AggregateRoot
 {

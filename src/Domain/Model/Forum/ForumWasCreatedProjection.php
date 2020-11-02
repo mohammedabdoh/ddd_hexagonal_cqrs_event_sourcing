@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Model\Forum;
 
-use App\Domain\DomainEvent;
-use App\Domain\Projection;
+use App\Common\Domain\DomainEvent;
+use App\Common\Domain\Projection;
 use Elasticsearch\Client;
 
 class ForumWasCreatedProjection implements Projection

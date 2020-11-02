@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Application\Query;
 
@@ -14,9 +16,6 @@ class PostsQueryHandler
         $this->repository = $repository;
     }
 
-    /**
-     * @return AllPosts
-     */
     public function all(): AllPosts
     {
         return new AllPosts($this->repository->all());

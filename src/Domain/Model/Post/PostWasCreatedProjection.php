@@ -2,8 +2,8 @@
 
 namespace App\Domain\Model\Post;
 
-use App\Domain\DomainEvent;
-use App\Domain\Projection;
+use App\Common\Domain\DomainEvent;
+use App\Common\Domain\Projection;
 use Elasticsearch\Client;
 
 class PostWasCreatedProjection implements Projection

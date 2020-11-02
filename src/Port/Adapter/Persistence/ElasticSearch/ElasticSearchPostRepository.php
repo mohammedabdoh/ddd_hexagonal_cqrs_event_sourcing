@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Port\Adapter\Persistence\ElasticSearch;
 
+use App\Domain\Model\Post\ElasticSearchPostRepository as BaseElasticSearchPostRepository;
 use App\Domain\Model\Post\Post;
 use App\Domain\Model\Post\PostId;
-use App\Domain\Model\Post\ElasticSearchPostRepository as BaseElasticSearchPostRepository;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
@@ -27,7 +29,7 @@ class ElasticSearchPostRepository implements BaseElasticSearchPostRepository
                 [
                     'index' => 'posts',
                     'type' => 'post',
-                    'id' => $id
+                    'id' => $id,
                 ]
             );
             $foundPost = Post::buildAPost(
@@ -36,7 +38,6 @@ class ElasticSearchPostRepository implements BaseElasticSearchPostRepository
                 $result['_source']['content']
             );
         } catch (Missing404Exception $exception) {
-
         }
 
         return $foundPost;
@@ -61,6 +62,7 @@ class ElasticSearchPostRepository implements BaseElasticSearchPostRepository
                 ));
             }
         }
+
         return $foundPosts;
     }
 }
