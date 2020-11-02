@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Persistence\Redis;
 
 use App\Common\Domain\EventStream;
+use App\Domain\Model\Forum\ForumWasCreated;
 use Predis\Client;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -15,7 +16,7 @@ class EventStore
 
     /**
      * EventStream constructor.
-     *
+     * s
      * @param Client $client
      * @param SerializerInterface $serializer
      */
@@ -32,13 +33,16 @@ class EventStore
 
             $date = (new \DateTimeImmutable())->format('YmdHis');
 
-            $this->client->set(
+            $this->client->rpush(
                 'events:'.$eventStream->getAggregateId(),
-                $this->serializer->serialize([
-                    'type' => get_class($event),
-                    'created_on' => $date,
-                    'data' => $data,
-                ], 'json')
+                $this->serializer->serialize(
+                    new RedisForumEvent(
+                        get_class($event),
+                        $date,
+                        $data
+                    ),
+                    'json'
+                )
             );
         }
     }
@@ -56,12 +60,12 @@ class EventStore
         foreach ($serializedEvents as $serializedEvent) {
             $eventData = $this->serializer->deserialize(
                 $serializedEvent,
-                'array',
+                RedisForumEvent::class,
                 'json'
             );
             $eventStream[] = $this->serializer->deserialize(
-                $eventData['data'],
-                'array',
+                $eventData->getDataRepresentation(),
+                ForumWasCreated::class,
                 'json'
             );
         }
