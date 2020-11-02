@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Port\Adapter\UI\Controller;
 
@@ -13,8 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * Class PostsController
- * @package App\Port\Adapter\UI\Controller
+ * Class PostsController.
+ *
  * @Route("/post/{id}", methods={"GET"}, name="fetch_a_post")
  */
 class PostController

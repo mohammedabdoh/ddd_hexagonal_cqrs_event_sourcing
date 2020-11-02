@@ -44,6 +44,7 @@ services:
       - php
       - es01
       - db
+      - redis
     ports:
       - 80:8080
       - 443:8443
@@ -51,6 +52,7 @@ services:
       - db
       - es01
       - php
+      - redis
     networks:
       - ddd
 
@@ -64,6 +66,15 @@ services:
       - ddd
     environment:
       PHP_IDE_CONFIG: "serverName=ddd"
+
+  redis:
+    image: redis
+    networks:
+      - ddd
+    hostname: redis
+    container_name: redis_container
+    ports:
+      - 6379:6379
 
   composer:
     build: ./docker/composer
