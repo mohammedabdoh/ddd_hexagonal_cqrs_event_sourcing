@@ -24,16 +24,6 @@ class ForumWasCreatedProjection implements Projection
 
     public function project(DomainEvent $domainEvent): void
     {
-        $this->client->index(
-            [
-                'index' => 'forums',
-                'type' => 'forum',
-                'id' => $domainEvent->getForumId()->getId(),
-                'body' => [
-                    'title' => $domainEvent->getTitle(),
-                    'closed' => $domainEvent->getClosed(),
-                ],
-            ]
-        );
+
     }
 }

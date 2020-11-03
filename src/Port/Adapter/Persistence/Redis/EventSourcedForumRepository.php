@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Persistence\Redis;
 
 use App\Common\Domain\EventStream;
+use App\Common\Domain\Projector;
 use App\Domain\Model\Forum\EventSourcedForumRepository as BaseEventSourcedForumRepository;
 use App\Domain\Model\Forum\Forum;
-use App\Common\Domain\Projector;
 
 class EventSourcedForumRepository implements BaseEventSourcedForumRepository
 {
@@ -16,6 +16,7 @@ class EventSourcedForumRepository implements BaseEventSourcedForumRepository
 
     /**
      * EventSourcedForumRepository constructor.
+     *
      * @param EventStore $eventStore
      * @param Projector $projector
      */
@@ -27,7 +28,8 @@ class EventSourcedForumRepository implements BaseEventSourcedForumRepository
 
     public function byId(string $forumId): ?Forum
     {
-        return Forum::reconstitute($this->eventStore->fromVersion($forumId));
+        return $this->eventStore->hasItem($forumId) ?
+            Forum::reconstitute($this->eventStore->fromVersion($forumId)) : null;
     }
 
     public function save(Forum $forum): void

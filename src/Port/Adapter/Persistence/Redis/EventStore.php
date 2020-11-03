@@ -16,7 +16,7 @@ class EventStore
 
     /**
      * EventStream constructor.
-     * s
+     *
      * @param Client $client
      * @param SerializerInterface $serializer
      */
@@ -45,6 +45,11 @@ class EventStore
                 )
             );
         }
+    }
+
+    public function hasItem(string $forumId): bool
+    {
+        return (bool) $this->client->exists('events:'.$forumId);
     }
 
     public function fromVersion(string $forumId, int $version = 0): EventStream
