@@ -6,3 +6,4 @@ An in-progress demo for a DDD bounded context applying CQRS pattern and Event So
 - Unit tests
 - Domain Event Publisher (Async)
 - Aggregate tweaking
+- Aggregate Snapshoting
