@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Port\Adapter\Http\Controller\Forum;
+namespace App\Port\Adapter\Http\Rest\Controller\Forum;
 
 use App\Application\Exception\ForumNotFoundException;
 use App\Application\Query\ForumQuery;

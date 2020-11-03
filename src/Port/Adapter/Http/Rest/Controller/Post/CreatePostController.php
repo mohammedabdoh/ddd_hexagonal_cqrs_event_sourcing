@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Port\Adapter\Http\Controller\Forum;
+namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
-use App\Application\Command\CreateForumCommand;
+use App\Application\Command\CreatePostCommand;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,9 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class CreatePostController.
  *
- * @Route("/forum", methods={"POST"}, name="create_forum")
+ * @Route("/post", methods={"POST"}, name="create_post")
  */
-class CreateForumController
+class CreatePostController
 {
     private MessageBusInterface $bus;
 
@@ -29,7 +29,7 @@ class CreateForumController
     {
         $payload = json_decode($request->getContent(), true);
         $this->bus->dispatch(
-            new CreateForumCommand($payload['title'], $payload['closed'])
+            new CreatePostCommand($payload['title'], $payload['content'])
         );
 
         return new JsonResponse(null, Response::HTTP_CREATED);

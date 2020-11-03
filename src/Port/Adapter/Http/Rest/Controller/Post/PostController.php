@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Port\Adapter\Http\Controller\Post;
+namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
 use App\Application\Exception\PostNotFoundException;
 use App\Application\Query\PostQuery;
