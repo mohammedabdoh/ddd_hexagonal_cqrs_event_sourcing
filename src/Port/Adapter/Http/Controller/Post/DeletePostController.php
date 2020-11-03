@@ -2,44 +2,42 @@
 
 declare(strict_types=1);
 
-namespace App\Port\Adapter\UI\Controller;
+namespace App\Port\Adapter\Http\Controller\Post;
 
-use App\Application\Exception\ForumNotFoundException;
-use App\Application\Query\ForumQuery;
-use App\Application\Query\ForumQueryHandler;
+use App\Application\Command\DeletePostCommand;
 use App\Application\Representation\Error;
 use App\Application\Representation\Errors;
+use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * Class PostsController.
+ * Class CreatePostController.
  *
- * @Route("/forum/{id}", methods={"GET"}, name="fetch_a_forum")
+ * @Route("/post/{id}", methods={"DELETE"}, name="delete_post")
  */
-class ForumController
+class DeletePostController
 {
-    private ForumQueryHandler $handler;
+    private MessageBusInterface $bus;
     private SerializerInterface $serializer;
 
-    public function __construct(ForumQueryHandler $handler, SerializerInterface $serializer)
+    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
     {
-        $this->handler = $handler;
+        $this->bus = $bus;
         $this->serializer = $serializer;
     }
 
-    public function __invoke(string $id): Response
+    public function __invoke(Request $request, string $id): Response
     {
         try {
-            return JsonResponse::fromJsonString(
-                $this->serializer->serialize(
-                    $this->handler->byId(new ForumQuery($id)),
-                    'json'
-                )
-            );
-        } catch (ForumNotFoundException $exception) {
+            $this->bus->dispatch(new DeletePostCommand($id));
+
+            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        } catch (Exception $exception) {
             return JsonResponse::fromJsonString(
                 $this->serializer->serialize(
                     new Errors(

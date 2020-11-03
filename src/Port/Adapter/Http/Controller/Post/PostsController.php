@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Port\Adapter\UI\Controller;
+namespace App\Port\Adapter\Http\Controller\Post;
 
 use App\Application\Query\PostsQueryHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;

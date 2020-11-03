@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Port\Adapter\UI\Controller;
+namespace App\Port\Adapter\Http\Controller\Forum;
 
-use App\Application\Exception\PostNotFoundException;
-use App\Application\Query\PostQuery;
-use App\Application\Query\PostQueryHandler;
+use App\Application\Exception\ForumNotFoundException;
+use App\Application\Query\ForumQuery;
+use App\Application\Query\ForumQueryHandler;
 use App\Application\Representation\Error;
 use App\Application\Representation\Errors;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,14 +17,14 @@ use Symfony\Component\Serializer\SerializerInterface;
 /**
  * Class PostsController.
  *
- * @Route("/post/{id}", methods={"GET"}, name="fetch_a_post")
+ * @Route("/forum/{id}", methods={"GET"}, name="fetch_a_forum")
  */
-class PostController
+class ForumController
 {
-    private PostQueryHandler $handler;
+    private ForumQueryHandler $handler;
     private SerializerInterface $serializer;
 
-    public function __construct(PostQueryHandler $handler, SerializerInterface $serializer)
+    public function __construct(ForumQueryHandler $handler, SerializerInterface $serializer)
     {
         $this->handler = $handler;
         $this->serializer = $serializer;
@@ -35,11 +35,11 @@ class PostController
         try {
             return JsonResponse::fromJsonString(
                 $this->serializer->serialize(
-                    $this->handler->byId(new PostQuery($id)),
+                    $this->handler->byId(new ForumQuery($id)),
                     'json'
                 )
             );
-        } catch (PostNotFoundException $exception) {
+        } catch (ForumNotFoundException $exception) {
             return JsonResponse::fromJsonString(
                 $this->serializer->serialize(
                     new Errors(

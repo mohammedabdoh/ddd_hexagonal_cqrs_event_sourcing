@@ -23,8 +23,8 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    App\Port\Adapter\UI\Controller\:
-        resource: '../src/Port/Adapter/UI/Controller/'
+    App\Port\Adapter\Http\Controller\:
+        resource: '../src/Port/Adapter/Http/Controller/'
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
