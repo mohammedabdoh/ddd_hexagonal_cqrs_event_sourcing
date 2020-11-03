@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Representation;
+namespace App\Common\Application\Representation;
 
 class Errors
 {
