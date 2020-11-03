@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
-use App\Application\Command\DeletePostCommand;
+use App\Application\Command\Post\DeletePostCommand;
 use App\Application\Representation\Error;
 use App\Application\Representation\Errors;
 use Exception;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Command;
+namespace App\Application\Command\Post;
 
 use App\Common\Domain\Projector;
 use App\Domain\Model\Post\DoctrinePostRepository;

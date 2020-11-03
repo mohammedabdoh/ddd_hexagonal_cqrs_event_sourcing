@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Http\Rest\Controller\Forum;
 
-use App\Application\Command\CreateForumCommand;
+use App\Application\Command\Forum\CreateForumCommand;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

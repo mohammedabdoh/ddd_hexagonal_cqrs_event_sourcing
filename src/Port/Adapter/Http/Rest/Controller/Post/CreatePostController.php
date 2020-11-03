@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
-use App\Application\Command\CreatePostCommand;
+use App\Application\Command\Post\CreatePostCommand;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

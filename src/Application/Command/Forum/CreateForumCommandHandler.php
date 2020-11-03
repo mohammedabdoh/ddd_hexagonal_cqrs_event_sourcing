@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Command;
+namespace App\Application\Command\Forum;
 
 use App\Domain\Model\Forum\EventSourcedForumRepository;
 use App\Domain\Model\Forum\Forum;
