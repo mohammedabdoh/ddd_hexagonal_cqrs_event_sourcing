@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Representation;
+namespace App\Application\Representation\Post;
 
 use App\Domain\Model\Post\Post as PostModel;
 

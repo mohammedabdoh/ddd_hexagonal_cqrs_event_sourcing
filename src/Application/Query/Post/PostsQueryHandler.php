@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Query\Post;
 
-use App\Application\Representation\AllPosts;
+use App\Application\Representation\Post\AllPosts;
 use App\Domain\Model\Post\ElasticSearchPostRepository;
 
 class PostsQueryHandler

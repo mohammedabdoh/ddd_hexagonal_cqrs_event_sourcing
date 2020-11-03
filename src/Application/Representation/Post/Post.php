@@ -1,18 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Representation;
+namespace App\Application\Representation\Post;
 
-class Forum
+class Post
 {
     private string $id;
     private string $title;
-    private bool $closed;
+    private string $content;
 
-    public function __construct(string $id, string $title, bool $closed)
+    public function __construct(string $id, string $title, string $content)
     {
         $this->id = $id;
         $this->title = $title;
-        $this->closed = $closed;
+        $this->content = $content;
     }
 
     public function getId(): string
@@ -25,8 +25,8 @@ class Forum
         return $this->title;
     }
 
-    public function isClosed(): bool
+    public function getContent(): string
     {
-        return $this->closed;
+        return $this->content;
     }
 }

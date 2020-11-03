@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Query\Post;
 
 use App\Application\Exception\PostNotFoundException;
-use App\Application\Representation\Post;
+use App\Application\Representation\Post\Post;
 use App\Domain\Model\Post\ElasticSearchPostRepository;
 
 class PostQueryHandler

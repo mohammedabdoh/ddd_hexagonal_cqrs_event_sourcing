@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Query\Forum;
 
 use App\Application\Exception\ForumNotFoundException;
-use App\Application\Representation\Forum;
+use App\Application\Representation\Forum\Forum;
 use App\Domain\Model\Forum\EventSourcedForumRepository;
 
 class ForumQueryHandler
