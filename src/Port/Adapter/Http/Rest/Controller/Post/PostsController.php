@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
-use App\Application\Query\PostsQueryHandler;
+use App\Application\Query\Post\PostsQueryHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

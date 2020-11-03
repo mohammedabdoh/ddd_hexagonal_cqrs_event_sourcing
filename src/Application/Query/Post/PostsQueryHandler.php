@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Query;
+namespace App\Application\Query\Post;
 
 use App\Application\Representation\AllPosts;
 use App\Domain\Model\Post\ElasticSearchPostRepository;

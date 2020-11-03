@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Http\Rest\Controller\Forum;
 
 use App\Application\Exception\ForumNotFoundException;
-use App\Application\Query\ForumQuery;
-use App\Application\Query\ForumQueryHandler;
+use App\Application\Query\Forum\ForumQuery;
+use App\Application\Query\Forum\ForumQueryHandler;
 use App\Application\Representation\Error;
 use App\Application\Representation\Errors;
 use Symfony\Component\HttpFoundation\JsonResponse;

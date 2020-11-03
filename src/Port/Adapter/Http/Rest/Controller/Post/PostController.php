@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
 use App\Application\Exception\PostNotFoundException;
-use App\Application\Query\PostQuery;
-use App\Application\Query\PostQueryHandler;
+use App\Application\Query\Post\PostQuery;
+use App\Application\Query\Post\PostQueryHandler;
 use App\Application\Representation\Error;
 use App\Application\Representation\Errors;
 use Symfony\Component\HttpFoundation\JsonResponse;
