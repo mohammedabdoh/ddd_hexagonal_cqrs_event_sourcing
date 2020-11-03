@@ -7,3 +7,5 @@ An in-progress demo for a DDD bounded context applying CQRS pattern and Event So
 - Domain Event Publisher (Async)
 - Aggregate tweaking
 - Aggregate Snapshoting
+- Kubernetes deployment
+- Travis Commit Pipeline (CI)
