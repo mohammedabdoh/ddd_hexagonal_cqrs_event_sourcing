@@ -8,6 +8,7 @@ interface EventSourcedForumRepository
 {
     /**
      * Fetches a Forum aggregate by its ID.
+     *
      * @param string $forumId
      * @return Forum|null
      */
@@ -15,6 +16,7 @@ interface EventSourcedForumRepository
 
     /**
      * Saves a Forum aggregate to a EventStream persistence.
+     *
      * @param Forum $forum
      */
     public function save(Forum $forum): void;
