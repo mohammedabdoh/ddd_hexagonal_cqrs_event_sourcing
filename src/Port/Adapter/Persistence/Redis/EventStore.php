@@ -70,7 +70,7 @@ class EventStore
             );
             $eventStream[] = $this->serializer->deserialize(
                 $eventData->getDataRepresentation(),
-                ForumWasCreated::class,
+                $eventData->getClassName(),
                 'json'
             );
         }
