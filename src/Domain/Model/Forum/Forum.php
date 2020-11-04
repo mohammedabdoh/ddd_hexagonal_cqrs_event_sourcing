@@ -27,10 +27,24 @@ class Forum extends EventSourcedAggregateRoot
         return $forum;
     }
 
+    public static function changeForumStatus(string $forumId, bool $closed): Forum
+    {
+        $newForumId = new ForumId($forumId);
+        $forum = new self($newForumId);
+        $forum->recordApplyAndPublish(new ForumStatusWasChanged($newForumId, $closed));
+
+        return $forum;
+    }
+
     public function applyForumWasCreated(ForumWasCreated $event): void
     {
         $this->forumId = $event->getForumId();
         $this->title = $event->getTitle();
+        $this->closed = $event->getClosed();
+    }
+
+    public function applyForumStatusWasChanged(ForumWasCreated $event): void
+    {
         $this->closed = $event->getClosed();
     }
 

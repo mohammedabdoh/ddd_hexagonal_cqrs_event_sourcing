@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * Class PostsController.
+ * Class ForumController.
  *
  * @Route("/forum/{id}", methods={"GET"}, name="fetch_a_forum")
  */
