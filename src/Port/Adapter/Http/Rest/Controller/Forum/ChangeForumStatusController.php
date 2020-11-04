@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Http\Rest\Controller\Forum;
 
 use App\Application\Command\Forum\ChangeForumStatusCommand;
+use App\Application\Exception\ForumNotFoundException;
 use App\Common\Application\Representation\Error;
 use App\Common\Application\Representation\Errors;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Exception;
 
 /**
  * Class ChangeForumStatusController.
@@ -40,7 +40,7 @@ class ChangeForumStatusController
                 new ChangeForumStatusCommand($id, $payload['closed'])
             );
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
-        } catch (Exception $exception) {
+        } catch (ForumNotFoundException $exception) {
             return JsonResponse::fromJsonString(
                 $this->serializer->serialize(
                     new Errors(
