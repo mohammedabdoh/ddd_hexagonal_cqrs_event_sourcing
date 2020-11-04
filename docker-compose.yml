@@ -20,7 +20,7 @@ services:
       - ddd
 
   db:
-    image: mysql:8.0.20
+    build: ./docker/mysql
     restart: always
     volumes:
       - db:/var/lib/mysql
