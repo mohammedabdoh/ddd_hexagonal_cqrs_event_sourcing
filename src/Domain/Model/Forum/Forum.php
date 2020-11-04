@@ -43,7 +43,7 @@ class Forum extends EventSourcedAggregateRoot
         $this->closed = $event->getClosed();
     }
 
-    public function applyForumStatusWasChanged(ForumWasCreated $event): void
+    public function applyForumStatusWasChanged(ForumStatusWasChanged $event): void
     {
         $this->closed = $event->getClosed();
     }
