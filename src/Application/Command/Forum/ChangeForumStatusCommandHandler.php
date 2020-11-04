@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Application\Command\Forum;
 
+use App\Application\Exception\ForumNotFoundException;
 use App\Domain\Model\Forum\EventSourcedForumRepository;
 use App\Domain\Model\Forum\Forum;
 use App\Domain\Model\Forum\ForumStatusWasChangedProjection;
-use App\Domain\Model\Forum\ForumWasCreatedProjection;
 use App\Common\Domain\Projector;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class ChangeForumStatusCommandHandler implements MessageHandlerInterface
 {
@@ -30,8 +30,16 @@ class ChangeForumStatusCommandHandler implements MessageHandlerInterface
         $this->registerProjection();
     }
 
+    /**
+     * @param ChangeForumStatusCommand $command
+     *
+     * @throws ForumNotFoundException
+     */
     public function __invoke(ChangeForumStatusCommand $command): void
     {
+        if(!$this->repository->exists($command->getForumId())) {
+            throw new ForumNotFoundException($command->getForumId());
+        }
         $post = Forum::changeForumStatus($command->getForumId(), $command->getClosed());
         $this->repository->save($post);
     }

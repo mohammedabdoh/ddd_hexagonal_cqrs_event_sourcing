@@ -26,9 +26,14 @@ class EventSourcedForumRepository implements BaseEventSourcedForumRepository
         $this->projector = $projector;
     }
 
+    public function exists(string $forumId): bool
+    {
+        return $this->eventStore->hasItem($forumId);
+    }
+
     public function byId(string $forumId): ?Forum
     {
-        return $this->eventStore->hasItem($forumId) ?
+        return $this->exists($forumId) ?
             Forum::reconstitute($this->eventStore->fromVersion($forumId)) : null;
     }
 

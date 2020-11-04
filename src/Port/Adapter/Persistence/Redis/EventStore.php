@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Persistence\Redis;
 
 use App\Common\Domain\EventStream;
-use App\Domain\Model\Forum\ForumWasCreated;
 use Predis\Client;
 use Symfony\Component\Serializer\SerializerInterface;
 
