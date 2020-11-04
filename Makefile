@@ -1,14 +1,16 @@
-.PHONY: run test install remove clean help
+.PHONY: run seed test install remove clean help
 
 run: ## run the application
 	@docker-compose up --build -d
 	@docker exec -it composer_container composer install
 	@docker exec -it php_fpm_container ./bin/console cache:warmup
-	@docker exec -it php_fpm_container ./bin/console doctrine:schema:create
-	@curl -X PUT http://localhost:9200/posts
 	@docker stop composer_container && docker rm composer_container
 
-test: ## run unit and functional tests
+seed: ## seed the databases
+	@docker exec -it php_fpm_container ./bin/console doctrine:schema:create
+	@curl -X PUT http://localhost:9200/posts
+
+test: ## run tests
 	@docker exec -it php_fpm_container ./vendor/phpunit/phpunit/phpunit
 
 install: ## install php dependency. EX: make install DEP=<package> DEV=--dev
