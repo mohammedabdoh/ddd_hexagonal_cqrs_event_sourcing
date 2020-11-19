@@ -1,7 +1,11 @@
 version: '2.2'
 services:
   es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    build:
+      context: .
+      args:
+        VERSION: $ELASTIC_VERSION
+      dockerfile: ./docker/elasticsearch/Dockerfile
     container_name: elastic_container
     environment:
       - node.name=es01
@@ -20,48 +24,51 @@ services:
       - ddd
 
   db:
-    image: mysql:8.0.20
-    restart: always
+    build:
+      context: .
+      args:
+        VERSION: $MYSQL_VERSION
+      dockerfile: ./docker/mysql/Dockerfile
     volumes:
       - db:/var/lib/mysql
     container_name: db_container
     environment:
-      - MYSQL_DATABASE=ddd
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=$MYSQL_DATABASE
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
     ports:
       - 3306:3306
     networks:
       - ddd
 
   nginx:
-    build: ./docker/nginx
+    build:
+      context: ./docker/nginx
+      args:
+        VERSION: $NGINX_VERSION
+      dockerfile: ./Dockerfile
+      target: dev
     container_name: web_container
-    volumes_from:
-      - php:rw
-    volumes:
-      - fpm_sockets:/tmp
     depends_on:
-      - php
+      - php-fpm
       - es01
       - db
       - redis
     ports:
-      - 80:8080
-      - 443:8443
-    links:
-      - db
-      - es01
-      - php
-      - redis
+      - 80:80
     networks:
       - ddd
 
-  php:
-    build: ./docker/php
+  php-fpm:
+    build:
+      context: .
+      args:
+        VERSION: $PHP_VERSION
+        COMPOSER_VERSION: $COMPOSER_VERSION
+      dockerfile: ./docker/php/Dockerfile
+      target: dev
     container_name: php_fpm_container
     volumes:
       - .:/var/www/html:cached
-      - fpm_sockets:/tmp
     networks:
       - ddd
     environment:
@@ -76,20 +83,10 @@ services:
     ports:
       - 6379:6379
 
-  composer:
-    build: ./docker/composer
-    container_name: composer_container
-    volumes:
-      - .:/app
-    networks:
-      - ddd
-
 volumes:
   data01:
     driver: local
   db:
-    driver: local
-  fpm_sockets:
     driver: local
 
 networks:

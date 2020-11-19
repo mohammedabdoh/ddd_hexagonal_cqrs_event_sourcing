@@ -1,21 +1,29 @@
-FROM php:7.4.2-fpm
+ARG VERSION
+ARG COMPOSER_VERSION
 
-RUN docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql
-RUN pecl install xdebug-2.9.8 \
-    && docker-php-ext-enable xdebug
+# Dev image
+FROM composer:${COMPOSER_VERSION} AS composer
+FROM php:${VERSION}-fpm-alpine AS dev
+RUN apk update && \
+    apk add --no-cache --virtual dev-deps git autoconf gcc g++ make && \
+    apk add --no-cache zlib-dev libzip-dev
+RUN pecl install xdebug && \
+    docker-php-ext-enable xdebug && \
+    docker-php-ext-install pdo_mysql zip
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN echo 'error_reporting = E_ERROR' >> /usr/local/etc/php/conf.d/docker-php-error-handling.ini
+WORKDIR /var/www/html
 
-RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.remote_host=docker.for.mac.localhost" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# Test image
+FROM dev AS test
+WORKDIR /var/www/html
+COPY . .
+RUN composer install --no-interaction --optimize-autoloader
+RUN chown -R www-data:www-data .
 
-RUN addgroup --system --gid 1000 sysusers
-RUN adduser --system --uid 1000 --ingroup sysusers appuser
-
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-RUN rm /usr/local/etc/php-fpm.d/zz-docker.conf
-
-USER appuser
-
-CMD ["php-fpm", "--nodaemonize"]
+# Production image
+FROM test AS prod
+WORKDIR /var/www/html
+RUN composer install --no-dev --no-interaction --optimize-autoloader
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN apk del dev-deps

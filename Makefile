@@ -2,9 +2,6 @@
 
 run: ## run the application
 	@docker-compose up --build -d
-	@docker exec -it composer_container composer install
-	@docker exec -it php_fpm_container ./bin/console cache:warmup
-	@docker stop composer_container && docker rm composer_container
 
 seed: ## seed the databases
 	@docker exec -it php_fpm_container ./bin/console doctrine:schema:create
