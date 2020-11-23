@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ddd-php-fpm-deployment
+  labels:
+    version: 1.0.0
+    type: php-fpm-deployment
+spec:
+  template:
+    metadata:
+      name: ddd-php-fpm-pod
+      labels:
+        version: 1.0.0
+        type: php-fpm-pod
+    spec:
+      containers:
+        - name: php-fpm-container
+          image: firefoxegy/php-7.4-fpm-alpine
+          ports:
+            - containerPort: 9000
+  replicas: 2
+  selector:
+    matchLabels:
+      type: php-fpm-pod

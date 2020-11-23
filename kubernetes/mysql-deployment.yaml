@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ddd-mysql-deployment
+  labels:
+    version: 1.0.0
+    type: mysql-deployment
+spec:
+  template:
+    metadata:
+      name: ddd-mysql-pod
+      labels:
+        version: 1.0.0
+        type: mysql-pod
+    spec:
+      containers:
+        - name: mysql_container
+          image: mysql:8.0.20
+          env:
+            - name: MYSQL_DATABASE
+              value: ddd
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          ports:
+            - 3306:3306
+  replicas: 2
+  selector:
+    matchLabels:
+      type: mysql-pod
