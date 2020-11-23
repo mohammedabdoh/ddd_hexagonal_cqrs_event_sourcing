@@ -1,7 +1,10 @@
-.PHONY: run seed test install remove clean help
+.PHONY: run provision seed test install remove clean help
 
 run: ## run the application
 	@docker-compose up --build -d
+
+provision: ## install dependencies
+	@docker exec -it php_fpm_container composer install
 
 seed: ## seed the databases
 	@docker exec -it php_fpm_container ./bin/console doctrine:schema:create
