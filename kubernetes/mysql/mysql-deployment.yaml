@@ -14,16 +14,16 @@ spec:
         type: mysql-pod
     spec:
       containers:
-        - name: mysql_container
-          image: mysql:8.0.20
+        - name: mysql-container
+          image: firefoxegy/mysql-ddd
           env:
             - name: MYSQL_DATABASE
               value: ddd
             - name: MYSQL_ROOT_PASSWORD
               value: root
           ports:
-            - 3306:3306
-  replicas: 2
+            - containerPort: 3306
+  replicas: 1
   selector:
     matchLabels:
       type: mysql-pod

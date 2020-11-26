@@ -28,13 +28,12 @@ services:
       context: .
       args:
         VERSION: $MYSQL_VERSION
+        MYSQL_DATABASE: $MYSQL_DATABASE
+        MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       dockerfile: ./docker/mysql/Dockerfile
     volumes:
       - db:/var/lib/mysql
     container_name: db_container
-    environment:
-      - MYSQL_DATABASE=$MYSQL_DATABASE
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
     ports:
       - 3306:3306
     networks:
