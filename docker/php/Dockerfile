@@ -23,7 +23,8 @@ RUN chown -R www-data:www-data .
 
 # Production image
 FROM test AS prod
-WORKDIR /var/www/html
+RUN rm -rf ./vendor
+RUN rm -rf ./var
 RUN composer install --no-dev --no-interaction --optimize-autoloader
 RUN rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN apk del dev-deps
