@@ -6,12 +6,7 @@ namespace App\Application\Query\Forum;
 
 class ForumQuery
 {
-    private string $id;
-
-    public function __construct(string $id)
-    {
-        $this->id = $id;
-    }
+    public function __construct(private string $id) {}
 
     public function getId(): string
     {
