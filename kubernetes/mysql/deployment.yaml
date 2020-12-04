@@ -1,17 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ddd-mysql-service
+  name: ddd-db-service
   labels:
     version: 1.0.0
     type: mysql-service
 spec:
-  selector:
-    version: 1.0.0
-    type: mysql-pod
   ports:
-    - protocol: TCP
-      port: 3306
+    - port: 3306
+  selector:
+    type: mysql-pod
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -21,6 +19,8 @@ metadata:
     version: 1.0.0
     type: mysql-deployment
 spec:
+  strategy:
+    type: Recreate
   template:
     metadata:
       name: ddd-mysql-pod
@@ -38,6 +38,13 @@ spec:
               value: root
           ports:
             - containerPort: 3306
+          volumeMounts:
+            - name: mysql-persistence-volume
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistence-volume
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
   replicas: 1
   selector:
     matchLabels:
