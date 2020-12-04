@@ -12,6 +12,11 @@ RUN pecl install xdebug && \
     docker-php-ext-install pdo_mysql zip
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN echo 'error_reporting = E_ERROR' >> /usr/local/etc/php/conf.d/docker-php-error-handling.ini
+RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.remote_host=docker.for.mac.localhost" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 WORKDIR /var/www/html
 
 # Test image

@@ -31,6 +31,7 @@ class DeletePostCommandHandler implements MessageHandlerInterface
     }
 
     /**
+     * @param DeletePostCommand $command
      * @throws PostNotFoundException
      */
     public function __invoke(DeletePostCommand $command): void
