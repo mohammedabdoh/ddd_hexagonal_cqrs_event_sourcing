@@ -2,9 +2,9 @@ services:
   Elasticsearch\ClientBuilder:
     factory: [ 'Elasticsearch\ClientBuilder', 'create' ]
     calls:
-      - [ setHosts, [ [ 'ddd-elastic-service:9200' ] ] ]
+      - [ setHosts, [ [ '%env(resolve:ELASTIC_URL)%' ] ] ]
       - [ build ]
 
   Predis\Client:
     arguments:
-      $parameters: 'tcp://ddd-redis-service:6379'
+      $parameters: '%env(resolve:REDIS_URL)%'

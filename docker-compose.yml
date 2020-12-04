@@ -1,6 +1,6 @@
 version: '2.2'
 services:
-  es01:
+  elastic:
     build:
       context: .
       args:
@@ -19,7 +19,7 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
-    hostname: es01
+    hostname: elastic
     networks:
       - ddd
 
@@ -49,11 +49,11 @@ services:
     container_name: web_container
     depends_on:
       - php-fpm
-      - es01
+      - elastic
       - db
       - redis
     ports:
-      - 80:80
+      - 8080:80
     networks:
       - ddd
 
