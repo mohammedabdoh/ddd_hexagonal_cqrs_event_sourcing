@@ -4,6 +4,7 @@ ARG COMPOSER_VERSION
 # Dev image
 FROM composer:${COMPOSER_VERSION} AS composer
 FROM php:${VERSION}-fpm-alpine AS dev
+ENV APP_ENV=dev
 RUN apk update && \
     apk add --no-cache --virtual dev-deps git autoconf gcc g++ make && \
     apk add --no-cache zlib-dev libzip-dev
@@ -23,13 +24,12 @@ WORKDIR /var/www/html
 FROM dev AS test
 WORKDIR /var/www/html
 COPY . .
-RUN composer install --no-interaction --optimize-autoloader
+RUN composer install --ignore-platform-reqs --no-interaction --optimize-autoloader
 RUN chown -R www-data:www-data .
 
 # Production image
 FROM test AS prod
-RUN rm -rf ./vendor
-RUN rm -rf ./var
-RUN composer install --no-dev --no-interaction --optimize-autoloader
+ENV APP_ENV=prod
+RUN composer install --ignore-platform-reqs --no-interaction --optimize-autoloader --no-dev
 RUN rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN apk del dev-deps

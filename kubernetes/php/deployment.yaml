@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: php-fpm-container
-          image: firefoxegy/php-7.4-fpm-alpine:v2
+          image: firefoxegy/php
           ports:
             - containerPort: 9000
   replicas: 2
