@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: elastic-container
-          image: firefoxegy/es
+          image: elasticsearch:7.9.3
           env:
             - name: discovery.type
               value: single-node
