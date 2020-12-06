@@ -33,6 +33,13 @@ spec:
           image: redis
           ports:
             - containerPort: 6379
+          volumeMounts:
+            - name: redis-persistence-volume
+              mountPath: /data
+      volumes:
+        - name: redis-persistence-volume
+          persistentVolumeClaim:
+            claimName: redis-pv-claim
   replicas: 1
   selector:
     matchLabels:

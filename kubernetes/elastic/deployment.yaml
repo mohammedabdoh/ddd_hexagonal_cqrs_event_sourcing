@@ -36,6 +36,13 @@ spec:
               value: single-node
           ports:
             - containerPort: 9200
+          volumeMounts:
+            - name: elastic-persistence-volume
+              mountPath: /usr/share/elasticsearch/data
+      volumes:
+        - name: elastic-persistence-volume
+          persistentVolumeClaim:
+            claimName: elastic-pv-claim
   replicas: 1
   selector:
     matchLabels:
