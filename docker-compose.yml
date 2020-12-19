@@ -6,6 +6,7 @@ services:
       args:
         VERSION: $ELASTIC_VERSION
       dockerfile: ./docker/elasticsearch/Dockerfile
+      target: dev
     container_name: elastic_container
     environment:
       - node.name=es01
@@ -31,6 +32,7 @@ services:
         MYSQL_DATABASE: $MYSQL_DATABASE
         MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       dockerfile: ./docker/mysql/Dockerfile
+      target: dev
     volumes:
       - db:/var/lib/mysql
     container_name: db_container
