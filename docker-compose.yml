@@ -29,8 +29,6 @@ services:
       context: .
       args:
         VERSION: $MYSQL_VERSION
-        MYSQL_DATABASE: $MYSQL_DATABASE
-        MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       dockerfile: ./docker/mysql/Dockerfile
       target: dev
     volumes:
@@ -40,6 +38,9 @@ services:
       - 3306:3306
     networks:
       - ddd
+    environment:
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
 
   nginx:
     build:
