@@ -4,7 +4,7 @@ run: ## run the application
 	@docker-compose up --build -d
 
 provision: ## install dependencies
-	@docker exec -it php_fpm_container composer install
+	@docker exec -it php_fpm_container composer install --ignore-platform-reqs
 
 seed: ## seed the databases
 	@docker exec -it php_fpm_container ./bin/console doctrine:schema:create
