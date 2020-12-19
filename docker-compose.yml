@@ -25,7 +25,14 @@ services:
       - ddd
 
   db:
-    image: library/mysql:8.0.20
+    build:
+      context: .
+      args:
+        VERSION: $MYSQL_VERSION
+        MYSQL_DATABASE: $MYSQL_DATABASE
+        MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      dockerfile: ./docker/mysql/Dockerfile
+      target: dev
     volumes:
       - db:/var/lib/mysql
     container_name: db_container
@@ -33,9 +40,6 @@ services:
       - 3306:3306
     networks:
       - ddd
-    environment:
-      MYSQL_DATABASE: $MYSQL_DATABASE
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
 
   nginx:
     build:
