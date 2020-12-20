@@ -5,10 +5,12 @@ framework:
 
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            rabbitmq: '%env(MESSENGER_TRANSPORT_DSN)%'
             # failed: 'doctrine://default?queue_name=failed'
             # sync: 'sync://'
 
         routing:
-            # Route your messages to the transports
-            # 'App\Message\YourMessage': async
+          'App\Application\Command\Forum\ChangeForumStatusCommand': rabbitmq
+          'App\Application\Command\Forum\CreateForumCommand': rabbitmq
+          'App\Application\Command\Post\CreatePostCommand': rabbitmq
+          'App\Application\Command\Post\DeletePostCommand': rabbitmq

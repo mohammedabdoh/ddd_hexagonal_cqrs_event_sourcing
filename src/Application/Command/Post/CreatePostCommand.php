@@ -4,10 +4,14 @@ namespace App\Application\Command\Post;
 
 class CreatePostCommand
 {
-    public function __construct(
-        private string $title,
-        private string $content
-    ) {}
+    private string $title;
+    private string $content;
+
+    public function __construct(string $title, string $content)
+    {
+        $this->title = $title;
+        $this->content = $content;
+    }
 
     public function getTitle(): string
     {

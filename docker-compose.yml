@@ -55,6 +55,7 @@ services:
       - elastic
       - db
       - redis
+      - amqp
     ports:
       - 80:80
     networks:
@@ -85,10 +86,29 @@ services:
     ports:
       - 6379:6379
 
+  amqp:
+    build:
+      context: .
+      args:
+        VERSION: $RABBITMQ_VERSION
+      dockerfile: ./docker/rabbitmq/Dockerfile
+      target: dev
+    container_name: amqp_container
+    volumes:
+      - messageing:/var/lib/rabbitmq
+    ports:
+      - 5672:5672
+      - 8000:15672
+    hostname: amqp
+    networks:
+      - ddd
+
 volumes:
   data01:
     driver: local
   db:
+    driver: local
+  messageing:
     driver: local
 
 networks:

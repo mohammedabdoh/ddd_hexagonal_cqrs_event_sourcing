@@ -11,6 +11,16 @@ RUN apk update && \
 RUN pecl install xdebug && \
     docker-php-ext-enable xdebug && \
     docker-php-ext-install pdo_mysql zip
+
+RUN apk update \
+    && apk add rabbitmq-c rabbitmq-c-dev \
+        libssh-dev \
+    && docker-php-ext-install \
+        bcmath \
+        sockets \
+    && pecl install amqp \
+    && docker-php-ext-enable amqp
+
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN echo 'error_reporting = E_ERROR' >> /usr/local/etc/php/conf.d/docker-php-error-handling.ini
 RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
