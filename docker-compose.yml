@@ -52,10 +52,6 @@ services:
     container_name: web_container
     depends_on:
       - php-fpm
-      - elastic
-      - db
-      - redis
-      - amqp
     ports:
       - 80:80
     networks:
@@ -70,13 +66,22 @@ services:
       dockerfile: ./docker/php/Dockerfile
       target: dev
     container_name: php_fpm_container
+    depends_on:
+      - redis
+      - elastic
+      - amqp
+      - db
     volumes:
       - .:/var/www/html:cached
-    command: ["./bin/console", "messenger:consume", "-vv"]
+    command: [
+        "/bin/sh",
+        '-c',
+        'php-fpm -D &>/dev/null && ./bin/console messenger:consume rabbitmq -vv'
+    ]
     networks:
       - ddd
     environment:
-      PHP_IDE_CONFIG: "serverName=ddd"
+      PHP_IDE_CONFIG: "serverName=backend"
 
   redis:
     image: redis

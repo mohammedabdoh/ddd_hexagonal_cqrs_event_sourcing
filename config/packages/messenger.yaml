@@ -1,14 +1,10 @@
 framework:
     messenger:
-        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
-        # failure_transport: failed
-
         transports:
-            # https://symfony.com/doc/current/messenger.html#transport-configuration
-            rabbitmq: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # failed: 'doctrine://default?queue_name=failed'
-            # sync: 'sync://'
-
+            rabbitmq:
+              dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+              options:
+                connect_timeout: 30
         routing:
           'App\Domain\Model\Post\PostWasCreated': rabbitmq
           'App\Domain\Model\Post\PostWasDeleted': rabbitmq
