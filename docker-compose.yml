@@ -72,6 +72,7 @@ services:
     container_name: php_fpm_container
     volumes:
       - .:/var/www/html:cached
+    command: ["./bin/console", "messenger:consume", "-vv"]
     networks:
       - ddd
     environment:
