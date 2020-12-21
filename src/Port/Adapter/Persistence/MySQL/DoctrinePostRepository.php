@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Persistence\MySQL;
 
-use App\Common\Domain\Projector;
 use App\Domain\Model\Post\DoctrinePostRepository as BaseDoctrinePostRepository;
 use App\Domain\Model\Post\Post;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,12 +12,10 @@ use Exception;
 class DoctrinePostRepository implements BaseDoctrinePostRepository
 {
     private EntityManagerInterface $em;
-    private Projector $projector;
 
-    public function __construct(EntityManagerInterface $em, Projector $projector)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->projector = $projector;
     }
 
     public function byId(string $postId): ?Post
@@ -37,10 +34,7 @@ class DoctrinePostRepository implements BaseDoctrinePostRepository
         $this->em->transactional(function (EntityManagerInterface $em) use ($post) {
             $em->persist($post);
             $em->flush();
-            // TODO: save events here
         });
-
-        $this->projector->project($post->recordedEvents());
     }
 
     public function delete(Post $post): void
@@ -49,7 +43,5 @@ class DoctrinePostRepository implements BaseDoctrinePostRepository
             $em->remove($post);
             $em->flush();
         });
-
-        $this->projector->project($post->recordedEvents());
     }
 }

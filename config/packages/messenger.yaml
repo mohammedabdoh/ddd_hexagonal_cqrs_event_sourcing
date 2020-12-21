@@ -10,7 +10,7 @@ framework:
             # sync: 'sync://'
 
         routing:
-          'App\Application\Command\Forum\ChangeForumStatusCommand': rabbitmq
-          'App\Application\Command\Forum\CreateForumCommand': rabbitmq
-          'App\Application\Command\Post\CreatePostCommand': rabbitmq
-          'App\Application\Command\Post\DeletePostCommand': rabbitmq
+          'App\Domain\Model\Post\PostWasCreated': rabbitmq
+          'App\Domain\Model\Post\PostWasDeleted': rabbitmq
+          'App\Domain\Model\Forum\ForumWasCreated': rabbitmq
+          'App\Domain\Model\Forum\ForumStatusWasChanged': rabbitmq

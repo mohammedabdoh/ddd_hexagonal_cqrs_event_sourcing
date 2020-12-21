@@ -1,23 +1,32 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Domain\Model\Post;
 
 use App\Common\Domain\DomainEvent;
 use App\Common\Domain\Projection;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 
-class PostWasCreatedProjection implements Projection
+class PostWasCreatedProjection implements Projection, MessageHandlerInterface
 {
     private Client $client;
 
-    public function __construct(Client $client)
+    public function __construct(ClientBuilder $clientBuilder)
     {
-        $this->client = $client;
+        $this->client = $clientBuilder->build();
     }
 
     public function listenTo(): string
     {
         return PostWasCreated::class;
+    }
+
+    public function __invoke(PostWasCreated $domainEvent): void
+    {
+        $this->project($domainEvent);
     }
 
     public function project(DomainEvent $domainEvent): void

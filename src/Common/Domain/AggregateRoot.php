@@ -4,9 +4,12 @@ namespace App\Common\Domain;
 
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class AggregateRoot
 {
+    protected static MessageBusInterface $bus;
+
     /** @var DomainEvent[] */
     private array $recordedEvents = [];
 
@@ -35,7 +38,7 @@ class AggregateRoot
 
     protected function publishThat(DomainEvent $event): void
     {
-        DomainEventPublisher::instance()->publish($event);
+        self::$bus->dispatch($event);
     }
 
     public function recordedEvents(): array
@@ -46,5 +49,10 @@ class AggregateRoot
     public function clearEvents(): void
     {
         $this->recordedEvents = [];
+    }
+
+    public static function setDomainPublisher(MessageBusInterface $bus): void
+    {
+        self::$bus = $bus;
     }
 }

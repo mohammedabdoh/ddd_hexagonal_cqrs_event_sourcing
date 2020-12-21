@@ -9,6 +9,7 @@ provision: ## install dependencies
 seed: ## seed the databases
 	@docker exec -it php_fpm_container ./bin/console doctrine:schema:create
 	@curl -X PUT http://localhost:9200/posts
+	@curl -X PUT http://localhost:9200/forums
 
 test: ## run tests
 	@docker exec -it php_fpm_container ./vendor/phpunit/phpunit/phpunit

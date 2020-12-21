@@ -6,20 +6,27 @@ namespace App\Domain\Model\Forum;
 
 use App\Common\Domain\DomainEvent;
 use App\Common\Domain\Projection;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 
-class ForumStatusWasChangedProjection implements Projection
+class ForumStatusWasChangedProjection implements Projection, MessageHandlerInterface
 {
     private Client $client;
 
-    public function __construct(Client $client)
+    public function __construct(ClientBuilder $clientBuilder)
     {
-        $this->client = $client;
+        $this->client = $clientBuilder->build();
     }
 
     public function listenTo(): string
     {
         return ForumWasCreated::class;
+    }
+
+    public function __invoke(ForumStatusWasChanged $forumStatusWasChanged): void
+    {
+        $this->project($forumStatusWasChanged);
     }
 
     public function project(DomainEvent $domainEvent): void
