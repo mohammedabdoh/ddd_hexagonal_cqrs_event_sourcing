@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: elastic-pv-claim
+  name: elastic-pvc
   labels:
-    type: elastic-pv-storage
+    type: elastic-storage
 spec:
   accessModes:
     - ReadWriteOnce
@@ -14,7 +14,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ddd-elastic-service
+  name: elastic-service
   labels:
     version: 1.0.0
     type: elastic-service
@@ -29,14 +29,14 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ddd-elastic-deployment
+  name: elastic-deployment
   labels:
     version: 1.0.0
     type: elastic-deployment
 spec:
   template:
     metadata:
-      name: ddd-elastic-pod
+      name: elastic-pod
       labels:
         version: 1.0.0
         type: elastic-pod
@@ -50,13 +50,14 @@ spec:
           ports:
             - containerPort: 9200
           volumeMounts:
-            - name: elastic-persistence-volume
+            - name: elastic-pv
               mountPath: /usr/share/elasticsearch/data
       volumes:
-        - name: elastic-persistence-volume
+        - name: elastic-pv
           persistentVolumeClaim:
-            claimName: elastic-pv-claim
+            claimName: elastic-pvc
   replicas: 1
   selector:
     matchLabels:
+      version: 1.0.0
       type: elastic-pod

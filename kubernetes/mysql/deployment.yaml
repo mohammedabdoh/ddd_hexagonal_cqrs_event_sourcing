@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: mysql-pv
   labels:
-    type: mysql-pv-storage
+    type: mysql-storage
 spec:
   accessModes:
     - ReadWriteOnce
@@ -17,9 +17,9 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim
+  name: mysql-pvc
   labels:
-    type: mysql-pv-storage
+    type: mysql-storage
 spec:
   accessModes:
     - ReadWriteOnce
@@ -31,7 +31,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ddd-mysql-service
+  name: mysql-service
   labels:
     version: 1.0.0
     type: mysql-service
@@ -44,7 +44,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ddd-mysql-deployment
+  name: mysql-deployment
   labels:
     version: 1.0.0
     type: mysql-deployment
@@ -53,14 +53,14 @@ spec:
     type: Recreate
   template:
     metadata:
-      name: ddd-mysql-pod
+      name: mysql-pod
       labels:
         version: 1.0.0
         type: mysql-pod
     spec:
       containers:
         - name: mysql-container
-          image: firefoxegy/mysql-ddd
+          image: firefoxegy/mysql
           env:
             - name: MYSQL_DATABASE
               value: ddd
@@ -69,13 +69,14 @@ spec:
           ports:
             - containerPort: 3306
           volumeMounts:
-            - name: mysql-persistence-volume
+            - name: mysql-pv
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-persistence-volume
+        - name: mysql-pv
           persistentVolumeClaim:
-            claimName: mysql-pv-claim
+            claimName: mysql-pvc
   replicas: 1
   selector:
     matchLabels:
+      version: 1.0.0
       type: mysql-pod

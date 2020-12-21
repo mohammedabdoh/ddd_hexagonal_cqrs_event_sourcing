@@ -1,29 +1,29 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: redis-pv
+  name: amqp-pv
   labels:
-    type: redis-storage
+    type: amqp-storage
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: redis-storage-class
+  storageClassName: amqp-storage-class
   capacity:
     storage: 5Gi
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /data
+    path: /var/lib/rabbitmq
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: redis-pvc
+  name: amqp-pvc
   labels:
-    type: redis-storage
+    type: amqp-storage
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: redis-storage-class
+  storageClassName: amqp-storage-class
   resources:
     requests:
       storage: 5Gi
@@ -31,47 +31,48 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-service
+  name: amqp-service
   labels:
     version: 1.0.0
-    type: redis-service
+    type: amqp-service
 spec:
   selector:
     version: 1.0.0
-    type: redis-pod
+    type: amqp-pod
   ports:
     - protocol: TCP
-      port: 6379
+      port: 5672
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-deployment
+  name: amqp-deployment
   labels:
     version: 1.0.0
-    type: redis-deployment
+    type: amqp-deployment
 spec:
   template:
     metadata:
-      name: redis-pod
+      name: amqp-pod
       labels:
         version: 1.0.0
-        type: redis-pod
+        type: amqp-pod
     spec:
       containers:
-        - name: redis-container
-          image: redis
+        - name: amqp-container
+          image: firefoxegy/amqp
           ports:
-            - containerPort: 6379
+            - containerPort: 5672
+            - containerPort: 15672
           volumeMounts:
-            - name: redis-pv
-              mountPath: /data
+            - name: amqp-pv
+              mountPath: /var/lib/rabbitmq
       volumes:
-        - name: redis-pv
+        - name: amqp-pv
           persistentVolumeClaim:
-            claimName: redis-pvc
+            claimName: amqp-pvc
   replicas: 1
   selector:
     matchLabels:
       version: 1.0.0
-      type: redis-pod
+      type: amqp-pod

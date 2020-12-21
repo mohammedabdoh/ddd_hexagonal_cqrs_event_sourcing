@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ddd-web-server-service
+  name: web-service
   labels:
     version: 1.0.0
-    type: web-server-service
+    type: web-service
 spec:
   selector:
     version: 1.0.0
@@ -16,14 +16,14 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ddd-web-server-deployment
+  name: web-server-deployment
   labels:
     version: 1.0.0
     type: web-server-deployment
 spec:
   template:
     metadata:
-      name: ddd-web-server-pod
+      name: web-server-pod
       labels:
         version: 1.0.0
         type: web-server-pod
@@ -37,4 +37,5 @@ spec:
   replicas: 3
   selector:
     matchLabels:
+      version: 1.0.0
       type: web-server-pod
