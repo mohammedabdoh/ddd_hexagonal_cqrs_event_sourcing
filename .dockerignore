@@ -6,4 +6,5 @@
 /.php_cs
 /.php_cs.cache
 /phpunit.xml
-.phpunit.result.cache
+/.phpunit.result.cache
+tags

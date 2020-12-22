@@ -1,0 +1,2 @@
+FROM ind3x/rpi-elasticsearch as dev
+FROM dev as prod

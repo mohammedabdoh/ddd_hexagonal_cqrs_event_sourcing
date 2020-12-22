@@ -1,0 +1,122 @@
+version: '2.2'
+services:
+  elastic:
+    build:
+      context: .
+      args:
+        VERSION: $ELASTIC_VERSION
+      dockerfile: ./docker/elasticsearch/DockerfileRasperryPi
+      target: dev
+    container_name: elastic_container
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    hostname: elastic
+    networks:
+      - ddd
+
+  db:
+    build:
+      context: .
+      args:
+        VERSION: $MYSQL_VERSION
+      dockerfile: ./docker/mysql/DockerfileRasperryPi
+      target: dev
+    volumes:
+      - db:/var/lib/mysql
+    container_name: db_container
+    ports:
+      - 3306:3306
+    networks:
+      - ddd
+    environment:
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+
+  nginx:
+    build:
+      context: ./docker/nginx
+      args:
+        VERSION: $NGINX_VERSION
+      dockerfile: ./Dockerfile
+      target: dev
+    container_name: web_container
+    depends_on:
+      - php-fpm
+    ports:
+      - 80:80
+    networks:
+      - ddd
+
+  php-fpm:
+    build:
+      context: .
+      args:
+        VERSION: $PHP_VERSION
+        COMPOSER_VERSION: $COMPOSER_VERSION
+      dockerfile: ./docker/php/Dockerfile
+      target: dev
+    container_name: php_fpm_container
+    depends_on:
+      - redis
+      - elastic
+      - amqp
+      - db
+    volumes:
+      - .:/var/www/html:cached
+    command: [
+        "/bin/sh",
+        '-c',
+        'php-fpm -D &>/dev/null && /opt/bin/wait-for-it.sh --timeout=0 amqp:5672 -- ./bin/console messenger:consume rabbitmq -vv'
+    ]
+    networks:
+      - ddd
+    environment:
+      PHP_IDE_CONFIG: "serverName=backend"
+
+  redis:
+    image: redis
+    networks:
+      - ddd
+    hostname: redis
+    container_name: redis_container
+    ports:
+      - 6379:6379
+
+  amqp:
+    build:
+      context: .
+      args:
+        VERSION: $RABBITMQ_VERSION
+      dockerfile: ./docker/rabbitmq/Dockerfile
+      target: dev
+    container_name: amqp_container
+    volumes:
+      - messageing:/var/lib/rabbitmq
+    ports:
+      - 5672:5672
+      - 8000:15672
+    hostname: amqp
+    networks:
+      - ddd
+
+volumes:
+  data01:
+    driver: local
+  db:
+    driver: local
+  messageing:
+    driver: local
+
+networks:
+  ddd:
+    driver: bridge

@@ -1,0 +1,5 @@
+ARG VERSION
+
+FROM hypriot/rpi-mysql as dev
+
+FROM dev as prod
