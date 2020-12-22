@@ -76,7 +76,7 @@ services:
     command: [
         "/bin/sh",
         '-c',
-        'php-fpm -D &>/dev/null && ./bin/console messenger:consume rabbitmq -vv'
+        'php-fpm -D &>/dev/null && /opt/bin/wait-for-it.sh --timeout=0 amqp:5672 -- ./bin/console messenger:consume rabbitmq -vv'
     ]
     networks:
       - ddd

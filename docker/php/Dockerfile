@@ -7,7 +7,7 @@ FROM php:${VERSION}-fpm-alpine AS dev
 ENV APP_ENV=dev
 RUN apk update && \
     apk add --no-cache --virtual dev-deps git autoconf gcc g++ make && \
-    apk add --no-cache zlib-dev libzip-dev
+    apk add --no-cache zlib-dev libzip-dev bash
 RUN pecl install xdebug && \
     docker-php-ext-enable xdebug && \
     docker-php-ext-install pdo_mysql zip
@@ -29,6 +29,9 @@ RUN echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-x
 RUN echo "xdebug.client_host=docker.for.mac.localhost" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 WORKDIR /var/www/html
+
+ADD ./scripts/wait-for-it.sh /opt/bin/
+RUN chmod +x /opt/bin/wait-for-it.sh
 
 # Test image
 FROM dev AS test
