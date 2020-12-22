@@ -34,7 +34,7 @@ spec:
           ports:
             - containerPort: 9000
           command: ["/bin/sh","-c"]
-          args: ['php-fpm -D &>/dev/null && ./bin/console messenger:consume rabbitmq -vv']
+          args: ['php-fpm -D &>/dev/null && /opt/bin/wait-for-it.sh --timeout=0 amqp-service:5672 -- ./bin/console messenger:consume rabbitmq -vv']
   replicas: 2
   selector:
     matchLabels:
