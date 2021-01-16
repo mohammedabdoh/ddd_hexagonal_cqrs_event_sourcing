@@ -3,6 +3,9 @@
 run: ## run the application
 	@docker-compose up --build -d
 
+runpi: ## run the application on a rasperrypi cluster with armhf architecture
+	@docker-compose -f docker-compose-rasperrypi.yml up --build -d
+
 provision: ## install dependencies
 	@docker exec -it php_fpm_container composer install --ignore-platform-reqs
 
@@ -24,6 +27,24 @@ clean: ## stops the containers if exists and remove all the dependencies
 	@docker-compose down --remove-orphans || true
 	@rm -rf vendor || true
 	@rm -rf var || true
+
+shell-web: ## shell into the web container
+	@docker exec -it web_container sh
+
+shell-php: ## shell into the php container
+	@docker exec -it php_fpm_container sh
+
+log-web: ## logs the web container
+	@docker logs -f web_container
+
+log-php: ## logs the php container
+	@docker logs -f php_fpm_container
+
+shell-mysql: ## run the mysql client on the database container
+	@docker exec -it db_container mysql -u root -p
+
+shell-redis: ## run the redis client on the redis container
+	@docker exec -it redis_container redis-cli
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
