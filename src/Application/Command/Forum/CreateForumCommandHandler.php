@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Command\Forum;
 
+use App\Application\Representation\Forum\ForumId;
 use App\Domain\Model\Forum\EventSourcedForumRepository;
 use App\Domain\Model\Forum\Forum;
 use App\Domain\Model\Forum\ForumTitle;
@@ -21,11 +22,14 @@ class CreateForumCommandHandler implements MessageHandlerInterface
         $this->bus = $bus;
     }
 
-    public function __invoke(CreateForumCommand $command): void
+    public function __invoke(CreateForumCommand $command): ForumId
     {
         Forum::setDomainPublisher($this->bus);
-        $this->repository->save(
-            Forum::createNewForum(ForumTitle::create($command->getTitle()), $command->getClosed())
-        );
+
+        $forum = Forum::createNewForum(ForumTitle::create($command->getTitle()), $command->getClosed());
+
+        $this->repository->save($forum);
+
+        return new ForumId($forum->forumId()->getId());
     }
 }
