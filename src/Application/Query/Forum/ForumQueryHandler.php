@@ -1,14 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Application\Query\Forum;
 
 use App\Application\Exception\ForumNotFoundException;
 use App\Application\Representation\Forum\Forum;
 use App\Domain\Model\Forum\EventSourcedForumRepository;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class ForumQueryHandler
+class ForumQueryHandler implements MessageHandlerInterface
 {
     private EventSourcedForumRepository $repository;
 
@@ -18,11 +17,9 @@ class ForumQueryHandler
     }
 
     /**
-     * @param ForumQuery $query
-     * @return Forum
      * @throws ForumNotFoundException
      */
-    public function byId(ForumQuery $query): Forum
+    public function __invoke(ForumQuery $query): Forum
     {
         $forum = $this->repository->byId($query->getId());
         if ($forum) {

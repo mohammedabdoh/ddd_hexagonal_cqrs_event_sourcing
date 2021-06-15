@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Http\Rest\Controller\Forum;
 
-use App\Application\Exception\ForumNotFoundException;
 use App\Application\Query\Forum\ForumQuery;
-use App\Application\Query\Forum\ForumQueryHandler;
 use App\Common\Application\Representation\Error;
 use App\Common\Application\Representation\Errors;
+use App\Application\Representation\Forum\Forum;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -21,25 +23,25 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class ForumController
 {
-    private ForumQueryHandler $handler;
     private SerializerInterface $serializer;
+    private MessageBusInterface $bus;
 
-    public function __construct(ForumQueryHandler $handler, SerializerInterface $serializer)
+    public function __construct(SerializerInterface $serializer, MessageBusInterface $bus)
     {
-        $this->handler = $handler;
         $this->serializer = $serializer;
+        $this->bus = $bus;
     }
 
     public function __invoke(string $id): Response
     {
         try {
+            $envelop = $this->bus->dispatch(new ForumQuery($id));
+            /** @var Forum $response */
+            $response = $envelop->last(HandledStamp::class)->getResult();
             return JsonResponse::fromJsonString(
-                $this->serializer->serialize(
-                    $this->handler->byId(new ForumQuery($id)),
-                    'json'
-                )
+                $this->serializer->serialize($response, 'json')
             );
-        } catch (ForumNotFoundException $exception) {
+        } catch (HandlerFailedException $exception) {
             return JsonResponse::fromJsonString(
                 $this->serializer->serialize(
                     new Errors(
