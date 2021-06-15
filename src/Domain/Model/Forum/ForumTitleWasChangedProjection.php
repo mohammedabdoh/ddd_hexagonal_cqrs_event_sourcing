@@ -6,11 +6,11 @@ namespace App\Domain\Model\Forum;
 
 use App\Common\Domain\DomainEvent;
 use App\Common\Domain\Projection;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class ForumStatusWasChangedProjection implements Projection, MessageHandlerInterface
+class ForumTitleWasChangedProjection implements Projection, MessageHandlerInterface
 {
     private Client $client;
 
@@ -24,21 +24,20 @@ class ForumStatusWasChangedProjection implements Projection, MessageHandlerInter
         return ForumWasCreated::class;
     }
 
-    public function __invoke(ForumStatusWasChanged $forumStatusWasChanged): void
+    public function __invoke(ForumTitleWasChanged $forumWasCreated): void
     {
-        $this->project($forumStatusWasChanged);
+        $this->project($forumWasCreated);
     }
 
     public function project(DomainEvent $domainEvent): void
     {
-        $this->client->update(
+        $this->client->index(
             [
                 'index' => 'forums',
                 'type' => 'forum',
                 'id' => $domainEvent->getForumId()->getId(),
                 'body' => [
                     'title' => $domainEvent->getTitle()->getTitle(),
-                    'closed' => $domainEvent->getClosed(),
                 ],
             ]
         );

@@ -28,7 +28,7 @@ class ForumQueryHandler
         if ($forum) {
             return new Forum(
                 $forum->forumId()->getId(),
-                $forum->title(),
+                $forum->title()->getTitle(),
                 $forum->closed()
             );
         }

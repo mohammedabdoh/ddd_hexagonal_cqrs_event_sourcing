@@ -2,24 +2,17 @@
 
 namespace App\Application\Command\Forum;
 
-class ChangeForumStatusCommand
+class CloseForumCommand
 {
     private string $forumId;
-    private bool $closed;
 
-    public function __construct(string $forumId, bool $closed)
+    public function __construct(string $forumId)
     {
         $this->forumId = $forumId;
-        $this->closed = $closed;
     }
 
     public function getForumId(): string
     {
         return $this->forumId;
-    }
-
-    public function getClosed(): bool
-    {
-        return $this->closed;
     }
 }

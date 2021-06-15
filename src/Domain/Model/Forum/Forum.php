@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Domain\Model\Forum;
 
@@ -10,7 +8,7 @@ use App\Common\Domain\EventStream;
 class Forum extends EventSourcedAggregateRoot
 {
     private ForumId $forumId;
-    private string $title;
+    private ForumTitle $title;
     private bool $closed;
 
     private function __construct(ForumId $forumId)
@@ -18,7 +16,7 @@ class Forum extends EventSourcedAggregateRoot
         $this->forumId = $forumId;
     }
 
-    public static function createNewForum(string $title, bool $closed): Forum
+    public static function createNewForum(ForumTitle $title, bool $closed): Forum
     {
         $forumId = ForumId::create();
         $forum = new self($forumId);
@@ -27,13 +25,32 @@ class Forum extends EventSourcedAggregateRoot
         return $forum;
     }
 
-    public static function changeForumStatus(string $forumId, bool $closed): Forum
+    public function closeForum(): void
     {
-        $newForumId = new ForumId($forumId);
-        $forum = new self($newForumId);
-        $forum->recordApplyAndPublish(new ForumStatusWasChanged($newForumId, $closed));
+        if($this->closed()) {
+            throw new ForumAlreadyClosed($this->forumId());
+        }
 
-        return $forum;
+        $this->recordApplyAndPublish(new ForumStatusWasChanged($this->forumId, true));
+    }
+
+    public function openForum(): void
+    {
+        if(!$this->closed()) {
+            throw new ForumAlreadyOpened($this->forumId());
+        }
+
+        $this->recordApplyAndPublish(new ForumStatusWasChanged($this->forumId, false));
+    }
+
+    public function changeForumTitle(ForumTitle $title): void
+    {
+        if($this->closed()) {
+            throw new ForumAlreadyClosed($this->forumId());
+        }
+        $this->title = $title;
+
+        $this->recordApplyAndPublish(new ForumTitleWasChanged($this->forumId, $title));
     }
 
     public function applyForumWasCreated(ForumWasCreated $event): void
@@ -48,6 +65,11 @@ class Forum extends EventSourcedAggregateRoot
         $this->closed = $event->getClosed();
     }
 
+    public function applyForumTitleWasChanged(ForumTitleWasChanged $event): void
+    {
+        $this->title = $event->getTitle();
+    }
+
     public static function reconstitute(EventStream $eventStream): self
     {
         $forum = new static(new ForumId($eventStream->getAggregateId()));
@@ -55,25 +77,16 @@ class Forum extends EventSourcedAggregateRoot
         return $forum;
     }
 
-    /**
-     * @return ForumId
-     */
     public function forumId(): ForumId
     {
         return $this->forumId;
     }
 
-    /**
-     * @return string
-     */
-    public function title(): string
+    public function title(): ForumTitle
     {
         return $this->title;
     }
 
-    /**
-     * @return bool
-     */
     public function closed(): bool
     {
         return $this->closed;

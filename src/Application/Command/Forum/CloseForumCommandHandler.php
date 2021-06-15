@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Application\Command\Forum;
 
+use App\Application\Exception\ForumNotFoundException;
 use App\Domain\Model\Forum\EventSourcedForumRepository;
 use App\Domain\Model\Forum\Forum;
-use App\Domain\Model\Forum\ForumTitle;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class CreateForumCommandHandler implements MessageHandlerInterface
+class CloseForumCommandHandler implements MessageHandlerInterface
 {
     private EventSourcedForumRepository $repository;
     private MessageBusInterface $bus;
@@ -21,11 +21,21 @@ class CreateForumCommandHandler implements MessageHandlerInterface
         $this->bus = $bus;
     }
 
-    public function __invoke(CreateForumCommand $command): void
+    /**
+     * @param CloseForumCommand $command
+     *
+     * @throws ForumNotFoundException
+     */
+    public function __invoke(CloseForumCommand $command): void
     {
+        if(!$this->repository->exists($command->getForumId())) {
+            throw new ForumNotFoundException($command->getForumId());
+        }
         Forum::setDomainPublisher($this->bus);
-        $this->repository->save(
-            Forum::createNewForum(ForumTitle::create($command->getTitle()), $command->getClosed())
-        );
+
+        $forum = $this->repository->byId($command->getForumId());
+        $forum->closeForum();
+
+        $this->repository->save($forum);
     }
 }

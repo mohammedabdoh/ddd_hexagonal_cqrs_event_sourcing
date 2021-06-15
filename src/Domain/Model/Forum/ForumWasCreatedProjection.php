@@ -37,7 +37,7 @@ class ForumWasCreatedProjection implements Projection, MessageHandlerInterface
                 'type' => 'forum',
                 'id' => $domainEvent->getForumId()->getId(),
                 'body' => [
-                    'title' => $domainEvent->getTitle(),
+                    'title' => $domainEvent->getTitle()->getTitle(),
                     'closed' => $domainEvent->getClosed(),
                 ],
             ]

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Http\Rest\Controller\Forum;
 
-use App\Application\Command\Forum\ChangeForumStatusCommand;
+use App\Application\Command\Forum\ChangeForumTitleCommand;
 use App\Common\Application\Representation\Error;
 use App\Common\Application\Representation\Errors;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,11 +16,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * Class ChangeForumStatusController.
- *
- * @Route("/forum/{id}", methods={"PATCH"}, name="change_forum_status")
+ * @Route("/forum/{id}/title", methods={"PATCH"}, name="change_forum_title")
  */
-class ChangeForumStatusController
+class ChangeForumTitleController
 {
     private MessageBusInterface $bus;
     private SerializerInterface $serializer;
@@ -34,21 +32,18 @@ class ChangeForumStatusController
     public function __invoke(Request $request, string $id): Response
     {
         $payload = json_decode($request->getContent(), true);
-
         try {
-            $this->bus->dispatch(
-                new ChangeForumStatusCommand($id, $payload['closed'])
-            );
+            $this->bus->dispatch(new ChangeForumTitleCommand($id, $payload['title']));
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         } catch (HandlerFailedException $exception) {
             return JsonResponse::fromJsonString(
                 $this->serializer->serialize(
                     new Errors(
-                        [new Error($exception->getMessage(), Response::HTTP_NOT_FOUND)]
+                        [new Error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY)]
                     ),
                     'json'
                 ),
-                Response::HTTP_NOT_FOUND
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
     }

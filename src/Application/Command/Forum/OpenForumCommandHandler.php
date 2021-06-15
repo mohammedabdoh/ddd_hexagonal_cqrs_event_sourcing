@@ -10,7 +10,7 @@ use App\Domain\Model\Forum\Forum;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class ChangeForumStatusCommandHandler implements MessageHandlerInterface
+class OpenForumCommandHandler implements MessageHandlerInterface
 {
     private EventSourcedForumRepository $repository;
     private MessageBusInterface $bus;
@@ -22,18 +22,18 @@ class ChangeForumStatusCommandHandler implements MessageHandlerInterface
     }
 
     /**
-     * @param ChangeForumStatusCommand $command
-     *
      * @throws ForumNotFoundException
      */
-    public function __invoke(ChangeForumStatusCommand $command): void
+    public function __invoke(OpenForumCommand $command): void
     {
         if(!$this->repository->exists($command->getForumId())) {
             throw new ForumNotFoundException($command->getForumId());
         }
         Forum::setDomainPublisher($this->bus);
-        $this->repository->save(
-            Forum::changeForumStatus($command->getForumId(), $command->getClosed())
-        );
+
+        $forum = $this->repository->byId($command->getForumId());
+        $forum->openForum();
+
+        $this->repository->save($forum);
     }
 }

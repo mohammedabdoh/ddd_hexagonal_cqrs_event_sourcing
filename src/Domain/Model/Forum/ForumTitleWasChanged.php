@@ -4,17 +4,15 @@ namespace App\Domain\Model\Forum;
 
 use App\Common\Domain\DomainEvent;
 
-class ForumWasCreated implements DomainEvent
+class ForumTitleWasChanged implements DomainEvent
 {
     private ForumId $forumId;
     private ForumTitle $title;
-    private bool $closed;
 
-    public function __construct(ForumId $forumId, ForumTitle $title, bool $closed)
+    public function __construct(ForumId $forumId, ForumTitle $title)
     {
         $this->forumId = $forumId;
         $this->title = $title;
-        $this->closed = $closed;
     }
 
     public function getForumId(): ForumId
@@ -25,14 +23,6 @@ class ForumWasCreated implements DomainEvent
     public function getTitle(): ForumTitle
     {
         return $this->title;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getClosed(): bool
-    {
-        return $this->closed;
     }
 
     public function getVersion(): string
