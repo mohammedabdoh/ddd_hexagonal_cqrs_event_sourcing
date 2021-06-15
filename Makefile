@@ -7,7 +7,7 @@ runpi: ## run the application on a rasperrypi cluster with armhf architecture
 	@docker-compose -f docker-compose-rasperrypi.yml up --build -d
 
 provision: ## install dependencies
-	@docker exec -it php_fpm_container composer install --ignore-platform-reqs
+	@docker run --rm -it -v ${PWD}:/app composer:2.0 instal --ignore-platform-reqs
 
 seed: ## seed the databases
 	@docker exec -it php_fpm_container ./bin/console doctrine:schema:create
