@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Http\Rest\Controller\Forum;
 
 use App\Application\Command\Forum\CreateForumCommand;
+use App\Common\CQRSAwareControllerTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Application\Representation\Forum\ForumId;
 
@@ -20,7 +20,7 @@ use App\Application\Representation\Forum\ForumId;
  */
 class CreateForumController
 {
-    private MessageBusInterface $bus;
+    use CQRSAwareControllerTrait;
 
     public function __construct(MessageBusInterface $bus)
     {
@@ -29,12 +29,12 @@ class CreateForumController
 
     public function __invoke(Request $request): Response
     {
-        $payload = json_decode($request->getContent(), true);
-
-        $envelop = $this->bus->dispatch(new CreateForumCommand($payload['title'], $payload['closed']));
+        $payload = $this->payload($request);
 
         /** @var ForumId $forumId */
-        $forumId = $envelop->last(HandledStamp::class)->getResult();
+        $forumId = $this->dispatchAndGetResults(
+            new CreateForumCommand($payload['title'], $payload['closed'])
+        );
 
         return new JsonResponse(null, Response::HTTP_CREATED, ['X-RESOURCE-ID' => $forumId->getId()]);
     }

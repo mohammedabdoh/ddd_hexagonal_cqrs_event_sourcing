@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
 use App\Application\Command\Post\CreatePostCommand;
+use App\Common\CQRSAwareControllerTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CreatePostController
 {
-    private MessageBusInterface $bus;
+    use CQRSAwareControllerTrait;
 
     public function __construct(MessageBusInterface $bus)
     {
@@ -27,8 +28,9 @@ class CreatePostController
 
     public function __invoke(Request $request): Response
     {
-        $payload = json_decode($request->getContent(), true);
-        $this->bus->dispatch(
+        $payload = $this->payload($request);
+
+        $this->dispatch(
             new CreatePostCommand($payload['title'], $payload['content'])
         );
 

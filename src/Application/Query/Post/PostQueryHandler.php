@@ -7,8 +7,9 @@ namespace App\Application\Query\Post;
 use App\Application\Exception\PostNotFoundException;
 use App\Application\Representation\Post\Post;
 use App\Domain\Model\Post\ElasticSearchPostRepository;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class PostQueryHandler
+class PostQueryHandler implements MessageHandlerInterface
 {
     private ElasticSearchPostRepository $repository;
 
@@ -18,11 +19,9 @@ class PostQueryHandler
     }
 
     /**
-     * @param PostQuery $query
-     * @return Post
      * @throws PostNotFoundException
      */
-    public function byId(PostQuery $query): Post
+    public function __invoke(PostQuery $query): Post
     {
         $post = $this->repository->byId($query->getId());
         if ($post) {

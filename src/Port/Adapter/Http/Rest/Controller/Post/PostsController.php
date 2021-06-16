@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
-use App\Application\Query\Post\PostsQueryHandler;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Application\Query\Post\PostsQuery;
+use App\Common\CQRSAwareControllerTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -17,19 +18,18 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class PostsController
 {
-    private PostsQueryHandler $handler;
-    private SerializerInterface $serializer;
+    use CQRSAwareControllerTrait;
 
-    public function __construct(PostsQueryHandler $handler, SerializerInterface $serializer)
+    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
     {
-        $this->handler = $handler;
+        $this->bus = $bus;
         $this->serializer = $serializer;
     }
 
     public function __invoke(): Response
     {
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($this->handler->all(), 'json')
+        return $this->responseFromJson(
+            $this->dispatchAndGetResults(new PostsQuery())
         );
     }
 }

@@ -10,3 +10,4 @@ framework:
           'App\Domain\Model\Post\PostWasDeleted': rabbitmq
           'App\Domain\Model\Forum\ForumWasCreated': rabbitmq
           'App\Domain\Model\Forum\ForumStatusWasChanged': rabbitmq
+          'App\Domain\Model\Forum\ForumTitleWasChanged': rabbitmq

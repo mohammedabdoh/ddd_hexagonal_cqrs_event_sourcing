@@ -7,6 +7,7 @@ namespace App\Port\Adapter\Http\Rest\Controller\Post;
 use App\Application\Command\Post\DeletePostCommand;
 use App\Common\Application\Representation\Error;
 use App\Common\Application\Representation\Errors;
+use App\Common\CQRSAwareControllerTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,8 +23,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class DeletePostController
 {
-    private MessageBusInterface $bus;
-    private SerializerInterface $serializer;
+    use CQRSAwareControllerTrait;
 
     public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
     {
@@ -34,16 +34,13 @@ class DeletePostController
     public function __invoke(Request $request, string $id): Response
     {
         try {
-            $this->bus->dispatch(new DeletePostCommand($id));
+            $this->dispatch(new DeletePostCommand($id));
 
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         } catch (HandlerFailedException $exception) {
-            return JsonResponse::fromJsonString(
-                $this->serializer->serialize(
-                    new Errors(
-                        [new Error($exception->getMessage(), Response::HTTP_NOT_FOUND)]
-                    ),
-                    'json'
+            return $this->responseFromJson(
+                new Errors(
+                    [new Error($exception->getMessage(), Response::HTTP_NOT_FOUND)]
                 ),
                 Response::HTTP_NOT_FOUND
             );

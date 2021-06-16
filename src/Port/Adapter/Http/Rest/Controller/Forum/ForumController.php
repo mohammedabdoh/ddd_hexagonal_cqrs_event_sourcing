@@ -8,6 +8,7 @@ use App\Application\Query\Forum\ForumQuery;
 use App\Common\Application\Representation\Error;
 use App\Common\Application\Representation\Errors;
 use App\Application\Representation\Forum\Forum;
+use App\Common\CQRSAwareControllerTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -23,8 +24,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class ForumController
 {
-    private SerializerInterface $serializer;
-    private MessageBusInterface $bus;
+    use CQRSAwareControllerTrait;
 
     public function __construct(SerializerInterface $serializer, MessageBusInterface $bus)
     {
@@ -35,19 +35,13 @@ class ForumController
     public function __invoke(string $id): Response
     {
         try {
-            $envelop = $this->bus->dispatch(new ForumQuery($id));
-            /** @var Forum $response */
-            $response = $envelop->last(HandledStamp::class)->getResult();
-            return JsonResponse::fromJsonString(
-                $this->serializer->serialize($response, 'json')
+            return $this->responseFromJson(
+                $this->dispatchAndGetResults(new ForumQuery($id))
             );
         } catch (HandlerFailedException $exception) {
-            return JsonResponse::fromJsonString(
-                $this->serializer->serialize(
-                    new Errors(
-                        [new Error($exception->getMessage(), Response::HTTP_NOT_FOUND)]
-                    ),
-                    'json'
+            return $this->responseFromJson(
+                new Errors(
+                    [new Error($exception->getMessage(), Response::HTTP_NOT_FOUND)]
                 ),
                 Response::HTTP_NOT_FOUND
             );

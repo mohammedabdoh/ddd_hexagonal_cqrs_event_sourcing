@@ -6,9 +6,9 @@ namespace App\Domain\Model\Forum;
 
 use App\Common\Domain\DomainEvent;
 use App\Common\Domain\Projection;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class ForumStatusWasChangedProjection implements Projection, MessageHandlerInterface
 {
@@ -37,7 +37,6 @@ class ForumStatusWasChangedProjection implements Projection, MessageHandlerInter
                 'type' => 'forum',
                 'id' => $domainEvent->getForumId()->getId(),
                 'body' => [
-                    'title' => $domainEvent->getTitle()->getTitle(),
                     'closed' => $domainEvent->getClosed(),
                 ],
             ]

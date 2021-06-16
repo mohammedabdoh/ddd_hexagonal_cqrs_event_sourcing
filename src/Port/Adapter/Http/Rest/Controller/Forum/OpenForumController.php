@@ -7,6 +7,7 @@ namespace App\Port\Adapter\Http\Rest\Controller\Forum;
 use App\Application\Command\Forum\OpenForumCommand;
 use App\Common\Application\Representation\Error;
 use App\Common\Application\Representation\Errors;
+use App\Common\CQRSAwareControllerTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +21,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class OpenForumController
 {
-    private MessageBusInterface $bus;
-    private SerializerInterface $serializer;
+    use CQRSAwareControllerTrait;
 
     public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
     {
@@ -32,15 +32,12 @@ class OpenForumController
     public function __invoke(Request $request, string $id): Response
     {
         try {
-            $this->bus->dispatch(new OpenForumCommand($id));
+            $this->dispatch(new OpenForumCommand($id));
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         } catch (HandlerFailedException $exception) {
-            return JsonResponse::fromJsonString(
-                $this->serializer->serialize(
-                    new Errors(
-                        [new Error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY)]
-                    ),
-                    'json'
+            return $this->responseFromJson(
+                new Errors(
+                    [new Error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY)]
                 ),
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );

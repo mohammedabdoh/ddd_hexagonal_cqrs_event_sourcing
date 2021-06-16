@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Port\Adapter\Http\Rest\Controller\Post;
 
-use App\Application\Exception\PostNotFoundException;
 use App\Application\Query\Post\PostQuery;
-use App\Application\Query\Post\PostQueryHandler;
 use App\Common\Application\Representation\Error;
 use App\Common\Application\Representation\Errors;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Common\CQRSAwareControllerTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -21,31 +21,24 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class PostController
 {
-    private PostQueryHandler $handler;
-    private SerializerInterface $serializer;
+    use CQRSAwareControllerTrait;
 
-    public function __construct(PostQueryHandler $handler, SerializerInterface $serializer)
+    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
     {
-        $this->handler = $handler;
+        $this->bus = $bus;
         $this->serializer = $serializer;
     }
 
     public function __invoke(string $id): Response
     {
         try {
-            return JsonResponse::fromJsonString(
-                $this->serializer->serialize(
-                    $this->handler->byId(new PostQuery($id)),
-                    'json'
-                )
+            return $this->responseFromJson(
+                $this->dispatchAndGetResults(new PostQuery($id))
             );
-        } catch (PostNotFoundException $exception) {
-            return JsonResponse::fromJsonString(
-                $this->serializer->serialize(
-                    new Errors(
-                        [new Error($exception->getMessage(), Response::HTTP_NOT_FOUND)]
-                    ),
-                    'json'
+        } catch (HandlerFailedException $exception) {
+            return $this->responseFromJson(
+                new Errors(
+                    [new Error($exception->getMessage(), Response::HTTP_NOT_FOUND)]
                 ),
                 Response::HTTP_NOT_FOUND
             );
