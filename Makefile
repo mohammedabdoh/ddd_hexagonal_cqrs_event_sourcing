@@ -1,7 +1,10 @@
-.PHONY: run runpi provision seed test install remove down destroy cache-clear shell-web shell-php shell-mysql shell-redis log-web log-php
+.PHONY: bootstrap run runpi provision seed test install remove down destroy cache-clear shell-web shell-php shell-mysql shell-redis log-web log-php
 
-run: ## run the application
+bootstrap: ## builds the docker images and starts the application
 	@docker-compose up --build -d
+
+run: ## start the containers
+	@docker-compose up -d
 
 runpi: ## run the application on a rasperrypi cluster with armhf architecture
 	@docker-compose -f docker-compose-rasperrypi.yml up --build -d
