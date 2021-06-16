@@ -34,7 +34,6 @@ class ForumWasCreatedProjection implements Projection, MessageHandlerInterface
         $this->client->index(
             [
                 'index' => 'forums',
-                'type' => 'forum',
                 'id' => $domainEvent->getForumId()->getId(),
                 'body' => [
                     'title' => $domainEvent->getTitle()->getTitle(),

@@ -31,13 +31,14 @@ class ForumTitleWasChangedProjection implements Projection, MessageHandlerInterf
 
     public function project(DomainEvent $domainEvent): void
     {
-        $this->client->index(
+        $this->client->update(
             [
                 'index' => 'forums',
-                'type' => 'forum',
                 'id' => $domainEvent->getForumId()->getId(),
                 'body' => [
-                    'title' => $domainEvent->getTitle()->getTitle(),
+                    'doc' => [
+                        'title' => $domainEvent->getTitle()->getTitle(),
+                    ]
                 ],
             ]
         );

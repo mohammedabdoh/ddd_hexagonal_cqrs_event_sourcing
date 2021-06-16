@@ -34,7 +34,6 @@ class PostWasCreatedProjection implements Projection, MessageHandlerInterface
         $this->client->index(
             [
                 'index' => 'posts',
-                'type' => 'post',
                 'id' => $domainEvent->postId()->id(),
                 'body' => [
                     'title' => $domainEvent->title(),

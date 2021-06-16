@@ -34,10 +34,11 @@ class ForumStatusWasChangedProjection implements Projection, MessageHandlerInter
         $this->client->update(
             [
                 'index' => 'forums',
-                'type' => 'forum',
                 'id' => $domainEvent->getForumId()->getId(),
                 'body' => [
-                    'closed' => $domainEvent->getClosed(),
+                    'doc' => [
+                        'closed' => $domainEvent->getClosed(),
+                    ]
                 ],
             ]
         );
